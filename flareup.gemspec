@@ -10,6 +10,11 @@ Gem::Specification.new do |s|
   s.summary     = %q{I will fill this in momentarily.}
   s.description = %q{I will fill this in momentarily.}
 
+  s.add_dependency('pg', '~> 0.17')
+
+  s.add_development_dependency('rake', '~> 10.0')
+  s.add_development_dependency('rspec', '~> 3.0')
+
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
