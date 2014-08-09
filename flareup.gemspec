@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = FlareUp::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Robert Slifka']
-  s.homepage    = 'http://www.github.com/rslifka/flareup'
+  s.homepage    = 'http://www.github.com/rslifka/flare-up'
   s.summary     = %q{I will fill this in momentarily.}
   s.description = %q{I will fill this in momentarily.}
 
