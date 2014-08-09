@@ -66,20 +66,34 @@ describe FlareUp::CopyCommand do
 
       let(:conn) { instance_double('FlareUp::Connection') }
       before do
-        expect(conn).to receive(:execute).and_raise(PG::ConnectionBad, message)
+        expect(conn).to receive(:execute).and_raise(exception, message)
       end
 
-      context 'when there was an error loading' do
-        let(:message) { "Check 'stl_load_errors' system table for details" }
-        before do
-          allow(subject).to receive(:fetch_load_errors).and_return(['error1'])
+      context 'when there was an internal error' do
+
+        let(:exception) { PG::InternalError }
+
+        context 'when there was an error loading' do
+          let(:message) { "Check 'stl_load_errors' system table for details" }
+          before do
+            allow(subject).to receive(:fetch_load_errors).and_return(['error1'])
+          end
+          it 'should respond with a list of errors' do
+            expect(subject.execute(conn)).to eq(['error1'])
+          end
         end
-        it 'should respond with a list of errors' do
-          expect(subject.execute(conn)).to eq(['error1'])
+
+        context 'when there was another kind of internal error' do
+          let(:message) { '_' }
+          it 'should respond with a list of errors' do
+            expect { subject.execute(conn) }.to raise_error(PG::InternalError, '_')
+          end
         end
+
       end
 
       context 'when there was another type of error' do
+        let(:exception) { PG::ConnectionBad }
         let(:message) { '_' }
         it 'should do something' do
           expect { subject.execute(conn) }.to raise_error(PG::ConnectionBad, '_')
