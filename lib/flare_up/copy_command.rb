@@ -30,6 +30,7 @@ module FlareUp
     def execute(connection)
       begin
         connection.execute(get_command)
+        []
       rescue PG::InternalError => e
         if e.message =~ /Check 'stl_load_errors' system table for details/
           return STLLoadErrorFetcher.fetch_errors(connection)

@@ -58,13 +58,19 @@ describe FlareUp::CopyCommand do
 
   describe '#execute' do
 
+    let(:conn) { instance_double('FlareUp::Connection') }
+
     context 'when successful' do
-      it 'should do something'
+      before do
+        expect(conn).to receive(:execute)
+      end
+      it 'should do something' do
+        expect(subject.execute(conn)).to eq([])
+      end
     end
 
     context 'when unsuccessful' do
 
-      let(:conn) { instance_double('FlareUp::Connection') }
       before do
         expect(conn).to receive(:execute).and_raise(exception, message)
       end
