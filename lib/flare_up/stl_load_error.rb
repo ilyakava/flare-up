@@ -24,6 +24,19 @@ module FlareUp
       @line_number = line_number
     end
 
+    def ==(other_error)
+      return false unless @err_reason == other_error.err_reason
+      return false unless @raw_field_value == other_error.raw_field_value
+      return false unless @raw_line == other_error.raw_line
+      return false unless @col_length == other_error.col_length
+      return false unless @type == other_error.type
+      return false unless @colname == other_error.colname
+      return false unless @filename == other_error.filename
+      return false unless @position == other_error.position
+      return false unless @line_number == other_error.line_number
+      true
+    end
+
     def self.from_pg_results_row(row)
       STLLoadError.new(
         row['err_reason'],
