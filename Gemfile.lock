@@ -19,6 +19,9 @@ GEM
     rspec-expectations (3.0.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.0.0)
+    rspec-its (1.0.1)
+      rspec-core (>= 2.99.0.beta1)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-mocks (3.0.3)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.3)
@@ -30,3 +33,4 @@ DEPENDENCIES
   flare-up!
   rake (~> 10.0)
   rspec (~> 3.0)
+  rspec-its (~> 1.0)
