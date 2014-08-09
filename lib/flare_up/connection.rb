@@ -49,6 +49,8 @@ module FlareUp
       end
     end
 
+    private
+
     def connection_parameters
       {
         :host => @host,
