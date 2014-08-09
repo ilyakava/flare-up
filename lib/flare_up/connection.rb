@@ -20,6 +20,16 @@ module FlareUp
     attr_accessor :password
     attr_accessor :connect_timeout
 
+    def initialize(host, dbname, user, password)
+      @host = host
+      @dbname = dbname
+      @user = user
+      @password = password
+
+      @port = 5439
+      @connect_timeout = 5
+    end
+
     def connect
       begin
         PG.connect(connection_parameters)

@@ -1,22 +1,35 @@
 describe FlareUp::Connection do
 
   subject do
-    FlareUp::Connection.new.tap do |c|
-      c.host = 'TEST_HOST'
-      c.port = 111
-      c.dbname = 'TEST_DB_NAME'
-      c.user = 'TEST_USER'
-      c.password = 'TEST_PASSWORD'
-      c.connect_timeout = 222
-    end
+    FlareUp::Connection.new('TEST_HOST', 'TEST_DB_NAME', 'TEST_USER', 'TEST_PASSWORD')
   end
 
   its(:host) { should == 'TEST_HOST' }
-  its(:port) { should == 111 }
+  its(:port) { should == 5439 }
   its(:dbname) { should == 'TEST_DB_NAME' }
   its(:user) { should == 'TEST_USER' }
   its(:password) { should == 'TEST_PASSWORD' }
-  its(:connect_timeout) { should == 222 }
+  its(:connect_timeout) { should == 5 }
+
+  describe 'Writers' do
+    subject do
+      FlareUp::Connection.new('', '', '', '').tap do |c|
+        c.host = 'TEST_HOST'
+        c.port = 111
+        c.dbname = 'TEST_DB_NAME'
+        c.user = 'TEST_USER'
+        c.password = 'TEST_PASSWORD'
+        c.connect_timeout = 222
+      end
+    end
+
+    its(:host) { should == 'TEST_HOST' }
+    its(:port) { should == 111 }
+    its(:dbname) { should == 'TEST_DB_NAME' }
+    its(:user) { should == 'TEST_USER' }
+    its(:password) { should == 'TEST_PASSWORD' }
+    its(:connect_timeout) { should == 222 }
+  end
 
   describe '#connect' do
 
@@ -88,11 +101,11 @@ describe FlareUp::Connection do
     it 'should return the required parameters' do
       expect(subject.connection_parameters).to eq({
         :host => 'TEST_HOST',
-        :port => 111,
+        :port => 5439,
         :dbname => 'TEST_DB_NAME',
         :user => 'TEST_USER',
         :password => 'TEST_PASSWORD',
-        :connect_timeout => 222,
+        :connect_timeout => 5,
       })
     end
 
