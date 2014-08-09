@@ -40,7 +40,7 @@ module FlareUp
           when /timeout expired/
             raise TimeoutError, 'Timeout connecting to the database (have you checked your Redshift security groups?)'
           when /database ".+" does not exist/
-            raise NoDatabaseError, "Database #{@db_name} does not exist"
+            raise NoDatabaseError, "Database #{@dbname} does not exist"
           when /password authentication failed for user/
             raise AuthenticationError, "Either username '#{@user}' or password invalid"
           else
