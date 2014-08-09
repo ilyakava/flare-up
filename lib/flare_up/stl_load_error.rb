@@ -37,6 +37,18 @@ module FlareUp
       true
     end
 
+    def pretty_print
+      <<-PRETTY
+REASON: #{@err_reason}
+LINE #: #{@line_number}
+POS   : #{@position}
+COLUMN: #{@colname} (LENGTH=#{@col_length})
+TYPE  : #{@type}
+LINE  : #{@raw_line.strip}
+        #{' ' * @position}^
+      PRETTY
+    end
+
     def self.from_pg_results_row(row)
       STLLoadError.new(
         row['err_reason'].strip,
