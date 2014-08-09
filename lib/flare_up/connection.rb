@@ -32,7 +32,7 @@ module FlareUp
 
     def connect
       begin
-        PG.connect(connection_parameters)
+        @pg_conn = PG.connect(connection_parameters)
       rescue PG::ConnectionBad => e
         case e.message
           when /nodename nor servname provided, or not known/
@@ -49,7 +49,11 @@ module FlareUp
       end
     end
 
-    private
+    # TODO - Not quite sure how to test this; perhaps fold connect/execute into
+    # TODO   one method so we can close connections in case of failure, etc.
+    def execute(statement)
+      @pg_conn.execute(statement)
+    end
 
     def connection_parameters
       {
