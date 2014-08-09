@@ -19,7 +19,6 @@ module FlareUp
     end
 
     def get_command
-      # COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options]
       "COPY #{@table_name} #{get_columns} FROM '#{@data_source}' CREDENTIALS '#{get_credentials}' #{@options}"
     end
 
