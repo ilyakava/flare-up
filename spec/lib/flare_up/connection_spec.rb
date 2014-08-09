@@ -20,16 +20,65 @@ describe FlareUp::Connection do
 
   describe '#connect' do
 
-    let(:mock_params) { { :foo => 'bar' } }
+    context 'when the connection succeeds' do
+      let(:mock_params) { { :foo => 'bar' } }
 
-    before do
-      allow(subject).to receive(:connection_parameters).and_return(mock_params)
+      before do
+        allow(subject).to receive(:connection_parameters).and_return(mock_params)
+      end
+
+      it 'should connect to Redshift with the appropriate parameters' do
+        expect(PG).to receive(:connect).with(mock_params)
+
+        subject.connect
+      end
     end
 
-    it 'should connect to Redshift with the appropriate parameters' do
-      expect(PG).to receive(:connect).with(mock_params)
+    context 'when the connection does not succeed' do
 
-      subject.connect
+      before do
+        expect(PG).to receive(:connect).and_raise(PG::ConnectionBad, message)
+      end
+
+      context 'when the host name is invalid' do
+        # PG::ConnectionBad: could not translate host name "redshift.amazonaws.co" to address: nodename nor servname provided, or not known
+        let(:message) { 'could not translate host name "TEST_HOSTNAME" to address: nodename nor servname provided, or not known' }
+        it 'should be an error' do
+          expect { subject.connect }.to raise_error(FlareUp::HostUnknownOrInaccessibleError)
+        end
+      end
+
+      context 'when the connection times out' do
+        # PG::ConnectionBad: timeout expired
+        let(:message) { 'timeout expired' }
+        it 'should be an error' do
+          expect { subject.connect }.to raise_error(FlareUp::TimeoutError)
+        end
+      end
+
+      context 'when the database does not exist' do
+        # PG::ConnectionBad: FATAL:  database "de" does not exist
+        let(:message) { 'FATAL:  database "TEST_DB_NAME" does not exist' }
+        it 'should be an error' do
+          expect { subject.connect }.to raise_error(FlareUp::NoDatabaseError)
+        end
+      end
+
+      context 'when authenication credentials are invalid' do
+        # PG::ConnectionBad: FATAL:  password authentication failed for user "slif1"
+        let(:message) { 'password authentication failed for user "slif1"' }
+        it 'should be an error' do
+          expect { subject.connect }.to raise_error(FlareUp::AuthenticationError)
+        end
+      end
+
+      context 'when the error is unknown' do
+        let(:message) { '_'}
+        it 'should be an error' do
+          expect { subject.connect }.to raise_error(FlareUp::UnknownError)
+        end
+      end
+
     end
 
   end
