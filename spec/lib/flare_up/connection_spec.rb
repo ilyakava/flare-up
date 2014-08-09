@@ -43,7 +43,7 @@ describe FlareUp::Connection do
       it 'should connect to Redshift with the appropriate parameters' do
         expect(PG).to receive(:connect).with(mock_params)
 
-        subject.connect
+        subject.send(:connect)
       end
     end
 
@@ -57,7 +57,7 @@ describe FlareUp::Connection do
         # PG::ConnectionBad: could not translate host name "redshift.amazonaws.co" to address: nodename nor servname provided, or not known
         let(:message) { 'could not translate host name "TEST_HOSTNAME" to address: nodename nor servname provided, or not known' }
         it 'should be an error' do
-          expect { subject.connect }.to raise_error(FlareUp::HostUnknownOrInaccessibleError)
+          expect { subject.send(:connect) }.to raise_error(FlareUp::HostUnknownOrInaccessibleError)
         end
       end
 
@@ -65,7 +65,7 @@ describe FlareUp::Connection do
         # PG::ConnectionBad: timeout expired
         let(:message) { 'timeout expired' }
         it 'should be an error' do
-          expect { subject.connect }.to raise_error(FlareUp::TimeoutError)
+          expect { subject.send(:connect) }.to raise_error(FlareUp::TimeoutError)
         end
       end
 
@@ -73,7 +73,7 @@ describe FlareUp::Connection do
         # PG::ConnectionBad: FATAL:  database "de" does not exist
         let(:message) { 'FATAL:  database "TEST_DB_NAME" does not exist' }
         it 'should be an error' do
-          expect { subject.connect }.to raise_error(FlareUp::NoDatabaseError)
+          expect { subject.send(:connect) }.to raise_error(FlareUp::NoDatabaseError)
         end
       end
 
@@ -81,14 +81,14 @@ describe FlareUp::Connection do
         # PG::ConnectionBad: FATAL:  password authentication failed for user "slif1"
         let(:message) { 'password authentication failed for user "slif1"' }
         it 'should be an error' do
-          expect { subject.connect }.to raise_error(FlareUp::AuthenticationError)
+          expect { subject.send(:connect) }.to raise_error(FlareUp::AuthenticationError)
         end
       end
 
       context 'when the error is unknown' do
         let(:message) { '_'}
         it 'should be an error' do
-          expect { subject.connect }.to raise_error(FlareUp::UnknownError)
+          expect { subject.send(:connect) }.to raise_error(FlareUp::UnknownError)
         end
       end
 
@@ -99,7 +99,7 @@ describe FlareUp::Connection do
   describe '#connection_parameters' do
 
     it 'should return the required parameters' do
-      expect(subject.connection_parameters).to eq({
+      expect(subject.send(:connection_parameters)).to eq({
         :host => 'TEST_HOST',
         :port => 5439,
         :dbname => 'TEST_DB_NAME',

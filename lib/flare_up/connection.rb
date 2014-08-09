@@ -30,9 +30,18 @@ module FlareUp
       @connect_timeout = 5
     end
 
+    # TODO - Not quite sure how to test this; perhaps fold connect/execute into
+    # TODO   one method so we can close connections in case of failure, etc.
+    def execute(statement)
+      @pg_conn ||= connect
+      @pg_conn.exec(statement)
+    end
+
+    private
+
     def connect
       begin
-        @pg_conn = PG.connect(connection_parameters)
+        PG.connect(connection_parameters)
       rescue PG::ConnectionBad => e
         case e.message
           when /nodename nor servname provided, or not known/
@@ -47,12 +56,6 @@ module FlareUp
             raise UnknownError
         end
       end
-    end
-
-    # TODO - Not quite sure how to test this; perhaps fold connect/execute into
-    # TODO   one method so we can close connections in case of failure, etc.
-    def execute(statement)
-      @pg_conn.execute(statement)
     end
 
     def connection_parameters
