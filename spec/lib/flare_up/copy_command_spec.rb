@@ -12,7 +12,7 @@ describe FlareUp::CopyCommand do
   describe '#get_command' do
     context 'when no optional fields are provided' do
       it 'should return a basic COPY command' do
-        expect(subject.get_command).to eq("COPY TEST_TABLE_NAME FROM TEST_DATA_SOURCE CREDENTIALS 'aws_access_key_id=TEST_ACCESS_KEY;aws_secret_access_key=TEST_SECRET_KEY'")
+        expect(subject.get_command).to eq("COPY TEST_TABLE_NAME FROM 'TEST_DATA_SOURCE' CREDENTIALS 'aws_access_key_id=TEST_ACCESS_KEY;aws_secret_access_key=TEST_SECRET_KEY'")
       end
     end
   end
