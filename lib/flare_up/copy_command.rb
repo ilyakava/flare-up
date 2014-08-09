@@ -32,7 +32,7 @@ module FlareUp
         connection.execute(get_command)
       rescue PG::InternalError => e
         if e.message =~ /Check 'stl_load_errors' system table for details/
-          return fetch_load_errors(connection)
+          return STLLoadErrorFetcher.fetch_errors(connection)
         end
         raise e
       end
@@ -47,10 +47,6 @@ module FlareUp
 
     def get_credentials
       "aws_access_key_id=#{@aws_access_key_id};aws_secret_access_key=#{@aws_secret_access_key}"
-    end
-
-    def fetch_load_errors(connection)
-
     end
 
   end

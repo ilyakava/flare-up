@@ -76,10 +76,10 @@ describe FlareUp::CopyCommand do
         context 'when there was an error loading' do
           let(:message) { "Check 'stl_load_errors' system table for details" }
           before do
-            allow(subject).to receive(:fetch_load_errors).and_return(['error1'])
+            allow(FlareUp::STLLoadErrorFetcher).to receive(:fetch_errors).and_return('FOO')
           end
           it 'should respond with a list of errors' do
-            expect(subject.execute(conn)).to eq(['error1'])
+            expect(subject.execute(conn)).to eq('FOO')
           end
         end
 
