@@ -9,11 +9,12 @@ describe FlareUp::CopyCommand do
   its(:aws_access_key_id) { should == 'TEST_ACCESS_KEY' }
   its(:aws_secret_access_key) { should == 'TEST_SECRET_KEY' }
   its(:columns) { should == [] }
+  its(:options) { should == '' }
 
   describe '#get_command' do
     context 'when no optional fields are provided' do
       it 'should return a basic COPY command' do
-        expect(subject.get_command).to eq("COPY TEST_TABLE_NAME  FROM 'TEST_DATA_SOURCE' CREDENTIALS 'aws_access_key_id=TEST_ACCESS_KEY;aws_secret_access_key=TEST_SECRET_KEY'")
+        expect(subject.get_command).to eq("COPY TEST_TABLE_NAME  FROM 'TEST_DATA_SOURCE' CREDENTIALS 'aws_access_key_id=TEST_ACCESS_KEY;aws_secret_access_key=TEST_SECRET_KEY' ")
       end
     end
 
@@ -23,6 +24,15 @@ describe FlareUp::CopyCommand do
       end
       it 'should include the column names in the command' do
         expect(subject.get_command).to start_with('COPY TEST_TABLE_NAME (column_name1, column_name2) FROM')
+      end
+    end
+
+    context 'when options are provided' do
+      before do
+        subject.options = 'OPTION1 OPTION2'
+      end
+      it 'should include the options in the command' do
+        expect(subject.get_command).to end_with(' OPTION1 OPTION2')
       end
     end
   end

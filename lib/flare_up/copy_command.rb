@@ -7,6 +7,7 @@ module FlareUp
     attr_reader :aws_access_key_id
     attr_reader :aws_secret_access_key
     attr_reader :columns
+    attr_accessor :options
 
     def initialize(table_name, data_source, aws_access_key_id, aws_secret_access_key)
       @table_name = table_name
@@ -14,11 +15,12 @@ module FlareUp
       @aws_access_key_id = aws_access_key_id
       @aws_secret_access_key = aws_secret_access_key
       @columns = []
+      @options = ''
     end
 
     def get_command
       # COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options]
-      "COPY #{@table_name} #{get_columns} FROM '#{@data_source}' CREDENTIALS '#{get_credentials}'"
+      "COPY #{@table_name} #{get_columns} FROM '#{@data_source}' CREDENTIALS '#{get_credentials}' #{@options}"
     end
 
     def columns=(columns)
