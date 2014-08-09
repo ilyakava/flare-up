@@ -56,4 +56,37 @@ describe FlareUp::CopyCommand do
     end
   end
 
+  describe '#execute' do
+
+    context 'when successful' do
+      it 'should do something'
+    end
+
+    context 'when unsuccessful' do
+
+      let(:conn) { instance_double('FlareUp::Connection') }
+
+      context 'when there was an error loading' do
+        before do
+          expect(conn).to receive(:execute).and_raise(PG::ConnectionBad, "Check 'stl_load_errors' system table for details")
+          allow(subject).to receive(:fetch_load_errors).and_return(['error1'])
+        end
+        it 'should respond with a list of errors' do
+          expect(subject.execute(conn)).to eq(['error1'])
+        end
+      end
+
+      context 'when there was another type of error' do
+        before do
+          expect(conn).to receive(:execute).and_raise(PG::ConnectionBad, '_')
+        end
+        it 'should do something' do
+          expect { subject.execute(conn) }.to raise_error(PG::ConnectionBad, '_')
+        end
+      end
+
+    end
+
+  end
+
 end
