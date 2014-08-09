@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Robert Slifka']
   s.homepage    = 'http://www.github.com/rslifka/flare-up'
-  s.summary     = %q{I will fill this in momentarily.}
-  s.description = %q{I will fill this in momentarily.}
+  s.summary     = %q{Command-line access to bulk data loading via Redshift's COPY command.}
+  s.description = %q{Flare-up makes Redshift COPY scriptable by providing CLI access to the Redshift COPY command, with handy access to pretty printed errors as well.}
 
   s.add_dependency('pg', '~> 0.17')
 
