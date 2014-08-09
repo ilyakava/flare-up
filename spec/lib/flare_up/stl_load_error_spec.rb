@@ -27,15 +27,15 @@ describe FlareUp::STLLoadError do
   describe '.from_pg_results_row' do
     let(:values) do
       {
-        'err_reason' => 'TEST_REASON',
-        'raw_field_value' => 'TEST_RAW_FIELD_VALUE',
-        'raw_line' => 'TEST_RAW_LINE',
-        'col_length' => 1,
-        'type' => 'TEST_TYPE',
-        'colname' => 'TEST_COLNAME',
-        'filename' => 'TEST_FILENAME',
-        'position' => 2,
-        'line_number' => 3
+        'err_reason' => 'TEST_REASON     ',
+        'raw_field_value' => 'TEST_RAW_FIELD_VALUE    ',
+        'raw_line' => 'TEST_RAW_LINE     ',
+        'col_length' => '1      ',
+        'type' => 'TEST_TYPE     ',
+        'colname' => 'TEST_COLNAME     ',
+        'filename' => 'TEST_FILENAME    ',
+        'position' => '2   ',
+        'line_number' => '3      '
       }
     end
 

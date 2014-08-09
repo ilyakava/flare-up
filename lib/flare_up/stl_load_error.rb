@@ -39,15 +39,15 @@ module FlareUp
 
     def self.from_pg_results_row(row)
       STLLoadError.new(
-        row['err_reason'],
-        row['raw_field_value'],
-        row['raw_line'],
-        row['col_length'],
-        row['type'],
-        row['colname'],
-        row['filename'],
-        row['position'],
-        row['line_number']
+        row['err_reason'].strip,
+        row['raw_field_value'].strip,
+        row['raw_line'].strip,
+        row['col_length'].strip.to_i,
+        row['type'].strip,
+        row['colname'].strip,
+        row['filename'].strip,
+        row['position'].strip.to_i,
+        row['line_number'].strip.to_i
       )
     end
 
