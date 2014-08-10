@@ -1,4 +1,5 @@
 require 'pg'
+require 'thor'
 
 require 'flare_up/connection'
 require 'flare_up/stl_load_error'

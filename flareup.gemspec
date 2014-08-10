@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Flare-up makes Redshift COPY scriptable by providing CLI access to the Redshift COPY command, with handy access to pretty printed errors as well.}
 
   s.add_dependency('pg', '~> 0.17')
+  s.add_dependency('thor', '~> 0.19')
 
   s.add_development_dependency('rake', '~> 10.0')
   s.add_development_dependency('rspec', '~> 3.0')

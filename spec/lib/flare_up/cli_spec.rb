@@ -1,8 +1,8 @@
 describe FlareUp::CLI do
 
-  describe '.start' do
-    it 'should exist so the CLI can boot' do
-      expect(FlareUp::CLI).to respond_to(:start)
+  describe '.class' do
+    it 'should be a Thor descendant so it can boot' do
+      expect(FlareUp::CLI.new).to be_a(Thor)
     end
   end
 
