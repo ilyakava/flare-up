@@ -3,27 +3,52 @@
 
 ## Why?
 
-Redshift prefers a bulk COPY operation over indidivual INSERTs which Redshift is not optimized for, and Amazon does not recommend it as a strategy for bulk loading.  This means a tool like Sqoop is out, as the number of INSERTs would be prohibitvely large given the data sets many folks import into Redshift.  Additionally, COPY is a SQL command, not something issued via the AWS Redshift REST API, meaning you need a SQL connection to your Redshift instance to bulk load data.
+Redshift prefers a bulk COPY operation over indidivual INSERTs which Redshift is not optimized for, and Amazon does not recommend it as a strategy for loading.  COPY is a SQL command, not something issued via the AWS Redshift REST API, meaning you need a SQL connection to your Redshift instance to bulk load data.
 
 The astute consumer of the AWS toolchain will note that [Data Pipeline](http://aws.amazon.com/datapipeline/) is one way this import may be completed however, we use Azkaban and the only thing worse one than one job flow control tool is two job flow control tools :)
 
-Additionally, access to COPY errors is a bit cumbersome.  On failure, Redshift populates the ```stl_load_errors``` table which inherently must be accessed via SQL.  Flare-up will pretty print any errors that occur during import so that you may examine your logs to versus having to establish a connection to Redshift to understand what went wrong.
+Additionally, access to COPY errors is a bit cumbersome.  On failure, Redshift populates the ```stl_load_errors``` table which inherently must be accessed via SQL.  Flare-up will pretty print any errors that occur during import so that you may examine your logs rather than establishing a connection to Redshift to understand what went wrong.
+
+## Requirements and Installation
+
+The `pg` gem is a dependency (required to issue SQL commands to Redshift) and will be pulled down with flare-up.
 
 ```
-TODO PASTE EXAMPLE OF PRETTY PRINT ERROR HERE
+> gem install flare-up
 ```
 
-## Sample Usage - Overview
+## Syntax
 
-At Sharethrough we're somewhat opinionated about having credentials present as environment variables for security purposes, and recommend it as a productionalized approach.  That being said, it can be a pain to export variables when you're testing a tool and as such, we support specifying all of these on the command-line.
+Available via `flare-up help copy`.
 
-### Environment Variables
-
-These will be queried if no command-line options are specified.
+At Sharethrough we're somewhat opinionated about having configuration (esp. credentials) present as environment variables (re: [Twelve-Factor App](http://12factor.net/)).  That being said, it can be a pain to export variables when you're testing a tool and as such, we support specifying all of these on the command-line.
 
 ```
-export AWS_ACCESS_KEY_ID=
-export AWS_SECRET_ACCESS_KEY=
-export REDSHIFT_USERNAME=
-export REDSHIFT_PASSWORD=
+Usage:
+  flare-up copy DATA_SOURCE REDSHIFT_ENDPOINT DATABASE TABLE
+
+Options:
+  [--aws-access-key=AWS_ACCESS_KEY]        # Required unless ENV['AWS_ACCESS_KEY_ID'] is set.
+  [--aws-secret-key=AWS_SECRET_KEY]        # Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set.
+  [--redshift-username=REDSHIFT_USERNAME]  # Required unless ENV['REDSHIFT_USERNAME'] is set.
+  [--redshift-password=REDSHIFT_PASSWORD]  # Required unless ENV['REDSHIFT_PASSWORD'] is set.
+  [--column-list=one two three]            # A space-separated list of columns, should your DATA_SOURCE require it
+  [--copy-options=COPY_OPTIONS]            # Appended to the end of the COPY command; enclose "IN QUOTES"
+```
+
+Currently there is only one command (`copy`) though we may add more, for example `errors` to report a configurable number of COPY errors.
+
+## Sample Usage
+
+Note that this example assumes you have credentials set as environment variables.
+
+```
+> flare-up                                                      \
+    copy                                                        \
+    s3://slif-redshift/hearthstone_cards_short_list.csv         \
+    flare-up-test.cskjnp4xvaje.us-west-2.redshift.amazonaws.com \
+    dev                                                         \
+    hearthstone_cards                                           \
+    --column-list name cost attack health description           \
+    --copy_options "REGION 'us-east-1' CSV"
 ```
