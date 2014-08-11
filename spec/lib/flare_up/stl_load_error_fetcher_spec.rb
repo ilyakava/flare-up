@@ -6,7 +6,7 @@ describe FlareUp::STLLoadErrorFetcher do
 
     before do
       expect(connection).to receive(:execute).
-        with('SELECT * FROM stl_load_errors ORDER BY query DESC, line_number, position LIMIT 3').
+        with('SELECT * FROM stl_load_errors ORDER BY query DESC, line_number, position LIMIT 1').
         and_return([
         {
           'err_reason' => 'TEST_REASON',
