@@ -21,7 +21,7 @@ The `pg` gem is a dependency (required to issue SQL commands to Redshift) and wi
 
 Available via `flare-up help copy`.
 
-At Sharethrough we're somewhat opinionated about having configuration (esp. credentials) present as environment variables (re: [Twelve-Factor App](http://12factor.net/)).  That being said, it can be a pain to export variables when you're testing a tool and as such, we support specifying all of these on the command-line.
+While we'd prefer if everyone stored configuration variables (esp. credentials) as environment variables (re: [Twelve-Factor App](http://12factor.net/)), it can be a pain to export variables when you're testing a tool and as such, we support specifying all of these on the command-line.
 
 ```
 Usage:
@@ -35,8 +35,6 @@ Options:
   [--column-list=one two three]            # A space-separated list of columns, should your DATA_SOURCE require it
   [--copy-options=COPY_OPTIONS]            # Appended to the end of the COPY command; enclose "IN QUOTES"
 ```
-
-Currently there is only one command (`copy`) though we may add more, for example `errors` to report a configurable number of COPY errors.
 
 ## Sample Usage
 
