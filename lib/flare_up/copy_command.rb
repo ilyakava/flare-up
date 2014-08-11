@@ -6,6 +6,8 @@ module FlareUp
   end
   class OtherZoneBucketError < CopyCommandError
   end
+  class SyntaxError < CopyCommandError
+  end
 
   class CopyCommand
 
@@ -46,6 +48,9 @@ module FlareUp
             raise DataSourceError, "A data source with prefix '#{@data_source}' does not exist."
           when /The bucket you are attempting to access must be addressed using the specified endpoint/
             raise OtherZoneBucketError, "Your Redshift instance appears to be in a different zone than your S3 bucket.  Specify the \"REGION 'bucket-region'\" option."
+          when /PG::SyntaxError/
+            matches = /syntax error (.+) \(PG::SyntaxError\)/.match(e.message)
+            raise SyntaxError, "Syntax error in the COPY command: [#{matches[1]}]."
           else
             raise e
         end

@@ -110,6 +110,13 @@ describe FlareUp::CopyCommand do
           end
         end
 
+        context 'when there is a syntax error in the command' do
+          let(:message) { 'ERROR:  syntax error at or near "lmlkmlk3" (PG::SyntaxError)' }
+          it 'should be error' do
+            expect { subject.execute(conn) }.to raise_error(FlareUp::SyntaxError, 'Syntax error in the COPY command: [at or near "lmlkmlk3"].')
+          end
+        end
+
       end
 
       context 'when there was another type of error' do
