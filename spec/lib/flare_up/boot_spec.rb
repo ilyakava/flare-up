@@ -1,6 +1,5 @@
 describe FlareUp::Boot do
 
-
   describe '.boot' do
     let(:copy_command) { instance_double('FlareUp::CopyCommand') }
 
@@ -20,6 +19,14 @@ describe FlareUp::Boot do
 
       context 'when there is a OtherZoneBucketError' do
         let(:copy_command_error) { FlareUp::OtherZoneBucketError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+      context 'when there is a OtherZoneBucketError' do
+        let(:copy_command_error) { FlareUp::SyntaxError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
           expect { FlareUp::Boot.boot({}) }.not_to raise_error
