@@ -1,8 +1,10 @@
 module FlareUp
 
-  class DataSourceError < StandardError
+  class CopyCommandError < StandardError
   end
-  class OtherZoneBucketError < StandardError
+  class DataSourceError < CopyCommandError
+  end
+  class OtherZoneBucketError < CopyCommandError
   end
 
   class CopyCommand

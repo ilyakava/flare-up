@@ -9,10 +9,7 @@ module FlareUp
 
       begin
         handle_load_errors(copy.execute(conn))
-      rescue DataSourceError => e
-        CLI.output_error("\x1b[31m#{e.message}")
-        CLI.bailout(1)
-      rescue OtherZoneBucketError => e
+      rescue CopyCommandError => e
         CLI.output_error("\x1b[31m#{e.message}")
         CLI.bailout(1)
       end
