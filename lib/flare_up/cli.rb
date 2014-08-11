@@ -24,7 +24,17 @@ module FlareUp
         :table => table_name
       }
       options.each { |k, v| boot_options[k.to_sym] = v }
+
+      CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
+      CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
+
       Boot.boot(boot_options)
+    end
+
+    def self.env_validator(options, option_name, env_variable_name)
+      options[option_name] ||= ENVWrap.get(env_variable_name)
+      return if options[option_name]
+      raise ArgumentError, "One of either the --#{option_name} option or the ENV['#{env_variable_name}'] must be set"
     end
 
   end

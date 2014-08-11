@@ -6,8 +6,15 @@ describe FlareUp::CLI do
       :data_source => 'TEST_DATA_SOURCE',
       :redshift_endpoint => 'TEST_REDSHIFT_ENDPOINT',
       :database => 'TEST_DATABASE',
-      :table => 'TEST_TABLE'
+      :table => 'TEST_TABLE',
+      :aws_access_key => 'TEST_AWS_ACCESS_KEY',
+      :aws_secret_key => 'TEST_AWS_SECRET_KEY'
     }
+  end
+
+  before do
+    allow(FlareUp::ENVWrap).to receive(:get).with('AWS_ACCESS_KEY_ID').and_return('TEST_AWS_ACCESS_KEY')
+    allow(FlareUp::ENVWrap).to receive(:get).with('AWS_SECRET_ACCESS_KEY').and_return('TEST_AWS_SECRET_KEY')
   end
 
   describe '#copy' do
@@ -35,36 +42,29 @@ describe FlareUp::CLI do
 
     describe 'AWS credentials' do
 
-      describe 'access key' do
-        context 'when an AWS access key is specified' do
-          it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_access_key => 'TEST_AWS_ACCESS_KEY'))
-            FlareUp::CLI.start(required_arguments + %w(--aws_access_key TEST_AWS_ACCESS_KEY))
-          end
-        end
-        context 'when an AWS access key is not specified' do
-          context 'when the key is available via ENV' do
-            it 'should boot with the key from the environment'
-          end
-          context 'when the key is not available via ENV' do
-            it 'should be an error'
-          end
-        end
-      end
-
       describe 'secret key' do
         context 'when an AWS secret key is specified' do
           it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_secret_key => 'TEST_AWS_SECRET_KEY'))
-            FlareUp::CLI.start(required_arguments + %w(--aws_secret_key TEST_AWS_SECRET_KEY))
+            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_secret_key => 'CLI_KEY'))
+            FlareUp::CLI.start(required_arguments + %w(--aws_secret_key CLI_KEY))
           end
         end
         context 'when an AWS secret key is not specified' do
           context 'when the key is available via ENV' do
-            it 'should boot with the key from the environment'
+            it 'should boot with the key from the environment' do
+              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_secret_key => 'TEST_AWS_SECRET_KEY'))
+              FlareUp::CLI.start(required_arguments)
+            end
           end
           context 'when the key is not available via ENV' do
-            it 'should be an error'
+            before do
+              allow(FlareUp::ENVWrap).to receive(:get).with('AWS_SECRET_ACCESS_KEY').and_return(nil)
+            end
+            it 'should be an error' do
+              expect {
+                FlareUp::CLI.start(required_arguments)
+              }.to raise_error(ArgumentError)
+            end
           end
         end
       end
