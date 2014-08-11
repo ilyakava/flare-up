@@ -10,7 +10,8 @@ describe FlareUp::CLI do
       :redshift_username => 'TEST_REDSHIFT_USERNAME',
       :redshift_password => 'TEST_REDSHIFT_PASSWORD',
       :aws_access_key => 'TEST_AWS_ACCESS_KEY',
-      :aws_secret_key => 'TEST_AWS_SECRET_KEY'
+      :aws_secret_key => 'TEST_AWS_SECRET_KEY',
+      :colorize_output => true
     }
   end
 
@@ -23,6 +24,11 @@ describe FlareUp::CLI do
   end
 
   describe '#copy' do
+
+    it 'should pass the options on the emitter' do
+      expect(FlareUp::Emitter).to receive(:store_options).with(required_options)
+      FlareUp::CLI.start(required_arguments)
+    end
 
     context 'when no options are specified' do
       it 'should boot with the proper options' do
@@ -43,6 +49,24 @@ describe FlareUp::CLI do
         expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:copy_options => 'TEST_COPY_OPTIONS WITH A SPACE'))
         FlareUp::CLI.start(required_arguments + ['--copy_options', 'TEST_COPY_OPTIONS WITH A SPACE'])
       end
+    end
+
+    describe 'colorizing output' do
+
+      context 'when it is not specified' do
+        it 'should boot with the proper options' do
+          expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:colorize_output => true))
+          FlareUp::CLI.start(required_arguments)
+        end
+      end
+
+      context 'when it is specified' do
+        it 'should boot with the proper options' do
+          expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:colorize_output => false))
+          FlareUp::CLI.start(required_arguments + ['--colorize_output=false'])
+        end
+      end
+
     end
 
     describe 'Redshift credentials' do

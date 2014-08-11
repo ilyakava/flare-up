@@ -24,6 +24,7 @@ module FlareUp
       RISKY_OPTIONS.each do |risky_option|
         message.gsub!(@BOOT_OPTIONS[risky_option], 'REDACTED')
       end
+      message.gsub!(/\e\[(\d+)(;\d+)*m/, '') unless @BOOT_OPTIONS[:colorize_output]
       message
     end
 

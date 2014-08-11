@@ -16,6 +16,7 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
     option :redshift_password, :type => :string, :desc => "Required unless ENV['REDSHIFT_PASSWORD'] is set."
     option :column_list, :type => :array, :desc => 'A space-separated list of columns, should your DATA_SOURCE require it'
     option :copy_options, :type => :string, :desc => "Appended to the end of the COPY command; enclose \"IN QUOTES\""
+    option :colorize_output, :type => :boolean, :desc => 'Should Flare-up colorize its output?', :default => true
 
     def copy(data_source, endpoint, database_name, table_name)
       boot_options = {
