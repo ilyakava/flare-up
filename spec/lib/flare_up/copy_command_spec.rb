@@ -89,6 +89,13 @@ describe FlareUp::CopyCommand do
           end
         end
 
+        context 'when there was an error with the S3 prefix' do
+          let(:message) { "The specified S3 prefix 'test_filename.csv' does not exist" }
+          it 'should be an error' do
+            expect { subject.execute(conn) }.to raise_error(FlareUp::DataSourceError)
+          end
+        end
+
         context 'when there was another kind of internal error' do
           let(:message) { '_' }
           it 'should respond with a list of errors' do

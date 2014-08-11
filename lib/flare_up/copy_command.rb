@@ -1,5 +1,8 @@
 module FlareUp
 
+  class DataSourceError < StandardError
+  end
+
   class CopyCommand
 
     attr_reader :table_name
@@ -32,10 +35,14 @@ module FlareUp
         connection.execute(get_command)
         []
       rescue PG::InternalError => e
-        if e.message =~ /Check 'stl_load_errors' system table for details/
-          return STLLoadErrorFetcher.fetch_errors(connection)
+        case e.message
+          when /Check 'stl_load_errors' system table for details/
+            return STLLoadErrorFetcher.fetch_errors(connection)
+          when /The specified S3 prefix '.+' does not exist/
+            raise DataSourceError, "A data source with prefix '#{@data_source}' does not exist."
+          else
+            raise e
         end
-        raise e
       end
     end
 
