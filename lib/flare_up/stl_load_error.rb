@@ -39,13 +39,13 @@ module FlareUp
 
     def pretty_print
       output = ''
-      output += "REASON: #{@err_reason}\n"
-      output += "LINE  : #{@line_number}\n"
-      output += "POS   : #{@position}\n"
-      output += "COLUMN: #{@colname} (LENGTH=#{@col_length})\n" if @colname.length > 0 && @col_length > 0
-      output += "TYPE  : #{@type}\n" if @type.length > 0
-      output += "LINE  : #{@raw_line}\n"
-      output += "        #{' ' * @position}^"
+      output += "\e[33mREASON: \e[37m#{@err_reason}\n"
+      output += "\e[33mLINE  : \e[37m#{@line_number}\n"
+      output += "\e[33mPOS   : \e[37m#{@position}\n"
+      output += "\e[33mCOLUMN: \e[37m#{@colname} (LENGTH=#{@col_length})\n" if @colname.length > 0 && @col_length > 0
+      output += "\e[33mTYPE  : \e[37m#{@type}\n" if @type.length > 0
+      output += "\e[33mLINE  : \e[37m#{@raw_line}\n"
+      output += "              \e[37m#{' ' * @position}^"
     end
 
     def self.from_pg_results_row(row)
