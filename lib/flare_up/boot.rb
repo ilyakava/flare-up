@@ -12,6 +12,9 @@ module FlareUp
       rescue DataSourceError => e
         CLI.output_error("\x1b[31m#{e.message}")
         CLI.bailout(1)
+      rescue OtherZoneBucketError => e
+        CLI.output_error("\x1b[31m#{e.message}")
+        CLI.bailout(1)
       end
 
     end

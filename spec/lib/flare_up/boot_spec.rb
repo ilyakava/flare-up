@@ -7,14 +7,25 @@ describe FlareUp::Boot do
     context 'when there is an error' do
       before do
         expect(FlareUp::Boot).to receive(:create_copy_command).and_return(copy_command)
-        expect(copy_command).to receive(:execute).and_raise(FlareUp::DataSourceError)
+        expect(copy_command).to receive(:execute).and_raise(copy_command_error)
       end
-      it 'should handle the error' do
-        expect(FlareUp::CLI).to receive(:bailout).with(1)
-        expect {
-          FlareUp::Boot.boot({})
-        }.not_to raise_error
+
+      context 'when there is a DataSourceError' do
+        let(:copy_command_error) { FlareUp::DataSourceError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
       end
+
+      context 'when there is a OtherZoneBucketError' do
+        let(:copy_command_error) { FlareUp::OtherZoneBucketError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
     end
 
   end
