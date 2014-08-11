@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = FlareUp::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Robert Slifka']
-  s.homepage    = 'http://www.github.com/rslifka/flare-up'
+  s.homepage    = 'http://www.github.com/sharethrough/flare-up'
   s.summary     = %q{Command-line access to bulk data loading via Redshift's COPY command.}
   s.description = %q{Flare-up makes Redshift COPY scriptable by providing CLI access to the Redshift COPY command, with handy access to pretty printed errors as well.}
 
