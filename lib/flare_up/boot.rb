@@ -44,6 +44,7 @@ module FlareUp
       stl_load_errors.each do |e|
         puts e.pretty_print
       end
+      CLI.bailout(1)
     end
 
   end
