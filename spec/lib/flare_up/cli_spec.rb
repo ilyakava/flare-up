@@ -42,6 +42,33 @@ describe FlareUp::CLI do
 
     describe 'AWS credentials' do
 
+      describe 'access key' do
+        context 'when an AWS access key is specified' do
+          it 'should boot with the proper options' do
+            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_access_key => 'CLI_KEY'))
+            FlareUp::CLI.start(required_arguments + %w(--aws_access_key CLI_KEY))
+          end
+        end
+        context 'when an AWS access key is not specified' do
+          context 'when the key is available via ENV' do
+            it 'should boot with the key from the environment' do
+              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_access_key => 'TEST_AWS_ACCESS_KEY'))
+              FlareUp::CLI.start(required_arguments)
+            end
+          end
+          context 'when the key is not available via ENV' do
+            before do
+              allow(FlareUp::ENVWrap).to receive(:get).with('AWS_ACCESS_KEY_ID').and_return(nil)
+            end
+            it 'should be an error' do
+              expect {
+                FlareUp::CLI.start(required_arguments)
+              }.to raise_error(ArgumentError)
+            end
+          end
+        end
+      end
+
       describe 'secret key' do
         context 'when an AWS secret key is specified' do
           it 'should boot with the proper options' do
