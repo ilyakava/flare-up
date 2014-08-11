@@ -7,7 +7,13 @@ module FlareUp
       conn = create_connection(options)
       copy = create_copy_command(options)
 
-      handle_load_errors(copy.execute(conn))
+      begin
+        handle_load_errors(copy.execute(conn))
+      rescue DataSourceError => e
+        CLI.output_error("\x1b[31m#{e.message}")
+        CLI.bailout(1)
+      end
+
     end
 
     def self.create_connection(options)

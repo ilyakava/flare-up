@@ -1,9 +1,22 @@
 describe FlareUp::Boot do
 
+
   describe '.boot' do
-    it 'should exist so we can boot the app' do
-      expect(FlareUp::Boot).to respond_to(:boot)
+    let(:copy_command) { instance_double('FlareUp::CopyCommand') }
+
+    context 'when there is an error' do
+      before do
+        expect(FlareUp::Boot).to receive(:create_copy_command).and_return(copy_command)
+        expect(copy_command).to receive(:execute).and_raise(FlareUp::DataSourceError)
+      end
+      it 'should handle the error' do
+        expect(FlareUp::CLI).to receive(:bailout).with(1)
+        expect {
+          FlareUp::Boot.boot({})
+        }.not_to raise_error
+      end
     end
+
   end
 
   describe '.create_connection' do
@@ -29,8 +42,8 @@ describe FlareUp::Boot do
 
     let(:options) {
       {
-        :table          => 'TEST_TABLE',
-        :data_source    => 'TEST_DATA_SOURCE',
+        :table => 'TEST_TABLE',
+        :data_source => 'TEST_DATA_SOURCE',
         :aws_access_key => 'TEST_ACCESS_KEY',
         :aws_secret_key => 'TEST_SECRET_KEY'
       }
