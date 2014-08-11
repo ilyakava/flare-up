@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flare-up (0.2)
+    flare-up (0.3)
       pg (~> 0.17)
       thor (~> 0.19)
 
