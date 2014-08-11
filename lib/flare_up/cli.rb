@@ -3,20 +3,19 @@ module FlareUp
   class CLI < Thor
 
     desc 'copy DATA_SOURCE REDSHIFT_ENDPOINT DATABASE TABLE', 'COPY data into REDSHIFT_ENDPOINT from DATA_SOURCE into DATABASE.TABLE'
-    long_desc = <<-LONGDESC
-    `flare-up copy` executes the Redshift COPY command, loading data from
-    DATA_SOURCE into DATABASE_NAME.TABLE_NAME at REDSHIFT_ENDPOINT.
+    long_desc <<-LONGDESC
+`flare-up copy` executes the Redshift COPY command, loading data from\x5
+DATA_SOURCE into DATABASE_NAME.TABLE_NAME at REDSHIFT_ENDPOINT.
 
-    TODO Examples:
-    > $ flare-up copy
+Documentation for this version can be found at:\x5
+https://github.com/rslifka/flare/blob/v#{FlareUp::VERSION}/README.md
     LONGDESC
-
-    option :column_list, :type => :array
-    option :copy_options, :type => :string, :desc => "Appended to the end of the COPY command; enclose \"IN QUOTES\""
     option :aws_access_key, :type => :string, :desc => "Required unless ENV['AWS_ACCESS_KEY_ID'] is set."
     option :aws_secret_key, :type => :string, :desc => "Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set."
     option :redshift_username, :type => :string, :desc => "Required unless ENV['REDSHIFT_USERNAME'] is set."
     option :redshift_password, :type => :string, :desc => "Required unless ENV['REDSHIFT_PASSWORD'] is set."
+    option :column_list, :type => :array, :desc => 'A space-separated list of columns, should your DATA_SOURCE require it'
+    option :copy_options, :type => :string, :desc => "Appended to the end of the COPY command; enclose \"IN QUOTES\""
 
     def copy(data_source, endpoint, database_name, table_name)
       boot_options = {
