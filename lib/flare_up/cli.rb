@@ -15,6 +15,8 @@ module FlareUp
     option :copy_options, :type => :string, :desc => "Appended to the end of the COPY command; enclose \"IN QUOTES\""
     option :aws_access_key, :type => :string, :desc => "Required unless ENV['AWS_ACCESS_KEY_ID'] is set."
     option :aws_secret_key, :type => :string, :desc => "Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set."
+    option :redshift_username, :type => :string, :desc => "Required unless ENV['REDSHIFT_USERNAME'] is set."
+    option :redshift_password, :type => :string, :desc => "Required unless ENV['REDSHIFT_PASSWORD'] is set."
 
     def copy(data_source, endpoint, database_name, table_name)
       boot_options = {
@@ -27,6 +29,8 @@ module FlareUp
 
       CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
       CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
+      CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
+      CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
 
       Boot.boot(boot_options)
     end

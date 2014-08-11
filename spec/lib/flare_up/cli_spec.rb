@@ -7,6 +7,8 @@ describe FlareUp::CLI do
       :redshift_endpoint => 'TEST_REDSHIFT_ENDPOINT',
       :database => 'TEST_DATABASE',
       :table => 'TEST_TABLE',
+      :redshift_username => 'TEST_REDSHIFT_USERNAME',
+      :redshift_password => 'TEST_REDSHIFT_PASSWORD',
       :aws_access_key => 'TEST_AWS_ACCESS_KEY',
       :aws_secret_key => 'TEST_AWS_SECRET_KEY'
     }
@@ -15,6 +17,8 @@ describe FlareUp::CLI do
   before do
     allow(FlareUp::ENVWrap).to receive(:get).with('AWS_ACCESS_KEY_ID').and_return('TEST_AWS_ACCESS_KEY')
     allow(FlareUp::ENVWrap).to receive(:get).with('AWS_SECRET_ACCESS_KEY').and_return('TEST_AWS_SECRET_KEY')
+    allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_USERNAME').and_return('TEST_REDSHIFT_USERNAME')
+    allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return('TEST_REDSHIFT_PASSWORD')
   end
 
   describe '#copy' do
@@ -38,6 +42,64 @@ describe FlareUp::CLI do
         expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:copy_options => 'TEST_COPY_OPTIONS WITH A SPACE'))
         FlareUp::CLI.start(required_arguments + ['--copy_options', 'TEST_COPY_OPTIONS WITH A SPACE'])
       end
+    end
+
+    describe 'Redshift credentials' do
+
+      describe 'username' do
+        context 'when it is specified on the CLI' do
+          it 'should boot with the proper options' do
+            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_username => 'CLI_VALUE'))
+            FlareUp::CLI.start(required_arguments + %w(--redshift_username CLI_VALUE))
+          end
+        end
+        context 'when it is not specified on the CLI' do
+          context 'when it is available via ENV' do
+            it 'should boot with the key from the environment' do
+              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_username => 'TEST_REDSHIFT_USERNAME'))
+              FlareUp::CLI.start(required_arguments)
+            end
+          end
+          context 'when it is not available via ENV' do
+            before do
+              allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_USERNAME').and_return(nil)
+            end
+            it 'should be an error' do
+              expect {
+                FlareUp::CLI.start(required_arguments)
+              }.to raise_error(ArgumentError)
+            end
+          end
+        end
+      end
+
+      describe 'password' do
+        context 'when it is specified on the CLI' do
+          it 'should boot with the proper options' do
+            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_password => 'CLI_VALUE'))
+            FlareUp::CLI.start(required_arguments + %w(--redshift_password CLI_VALUE))
+          end
+        end
+        context 'when it is not specified on the CLI' do
+          context 'when it is available via ENV' do
+            it 'should boot with the key from the environment' do
+              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_password => 'TEST_REDSHIFT_PASSWORD'))
+              FlareUp::CLI.start(required_arguments)
+            end
+          end
+          context 'when it is not available via ENV' do
+            before do
+              allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return(nil)
+            end
+            it 'should be an error' do
+              expect {
+                FlareUp::CLI.start(required_arguments)
+              }.to raise_error(ArgumentError)
+            end
+          end
+        end
+      end
+
     end
 
     describe 'AWS credentials' do
