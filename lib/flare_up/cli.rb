@@ -52,7 +52,7 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
 
     # TODO: Extract
     def self.output_error(message)
-      puts "\x1b[31m#{message}" unless ENV['TESTING']
+      $stderr.puts "\x1b[31m#{message}" unless ENV['TESTING']
     end
 
   end
