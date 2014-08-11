@@ -32,8 +32,8 @@ https://github.com/rslifka/flare/blob/v#{FlareUp::VERSION}/README.md
         CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
         CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
       rescue ArgumentError => e
-        puts "\x1b[31m#{e.message}"
-        exit(1)
+        CLI.output_error(e.message)
+        CLI.bailout(1)
       end
 
       Boot.boot(boot_options)
@@ -43,6 +43,16 @@ https://github.com/rslifka/flare/blob/v#{FlareUp::VERSION}/README.md
       options[option_name] ||= ENVWrap.get(env_variable_name)
       return if options[option_name]
       raise ArgumentError, "One of either the --#{option_name} option or the ENV['#{env_variable_name}'] must be set"
+    end
+
+    # TODO: Extract
+    def self.bailout(exit_code)
+      exit(1)
+    end
+
+    # TODO: Extract
+    def self.output_error(message)
+      puts "\x1b[31m#{message}" unless ENV['TESTING']
     end
 
   end

@@ -19,6 +19,7 @@ describe FlareUp::CLI do
     allow(FlareUp::ENVWrap).to receive(:get).with('AWS_SECRET_ACCESS_KEY').and_return('TEST_AWS_SECRET_KEY')
     allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_USERNAME').and_return('TEST_REDSHIFT_USERNAME')
     allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return('TEST_REDSHIFT_PASSWORD')
+    allow(FlareUp::Boot).to receive(:boot)
   end
 
   describe '#copy' do
@@ -63,11 +64,10 @@ describe FlareUp::CLI do
           context 'when it is not available via ENV' do
             before do
               allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_USERNAME').and_return(nil)
+              expect(FlareUp::CLI).to receive(:bailout).with(1)
             end
             it 'should be an error' do
-              expect {
-                FlareUp::CLI.start(required_arguments)
-              }.to raise_error(ArgumentError)
+              FlareUp::CLI.start(required_arguments)
             end
           end
         end
@@ -90,11 +90,10 @@ describe FlareUp::CLI do
           context 'when it is not available via ENV' do
             before do
               allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return(nil)
+              expect(FlareUp::CLI).to receive(:bailout).with(1)
             end
             it 'should be an error' do
-              expect {
-                FlareUp::CLI.start(required_arguments)
-              }.to raise_error(ArgumentError)
+              FlareUp::CLI.start(required_arguments)
             end
           end
         end
@@ -121,11 +120,10 @@ describe FlareUp::CLI do
           context 'when the key is not available via ENV' do
             before do
               allow(FlareUp::ENVWrap).to receive(:get).with('AWS_ACCESS_KEY_ID').and_return(nil)
+              expect(FlareUp::CLI).to receive(:bailout).with(1)
             end
             it 'should be an error' do
-              expect {
-                FlareUp::CLI.start(required_arguments)
-              }.to raise_error(ArgumentError)
+              FlareUp::CLI.start(required_arguments)
             end
           end
         end
@@ -148,11 +146,10 @@ describe FlareUp::CLI do
           context 'when the key is not available via ENV' do
             before do
               allow(FlareUp::ENVWrap).to receive(:get).with('AWS_SECRET_ACCESS_KEY').and_return(nil)
+              expect(FlareUp::CLI).to receive(:bailout).with(1)
             end
             it 'should be an error' do
-              expect {
-                FlareUp::CLI.start(required_arguments)
-              }.to raise_error(ArgumentError)
+              FlareUp::CLI.start(required_arguments)
             end
           end
         end
