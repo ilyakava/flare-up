@@ -10,7 +10,8 @@ describe FlareUp::STLLoadError do
       'TEST_COLNAME',
       'TEST_FILENAME',
       2,
-      3
+      3,
+      Time.parse('2014-08-11 06:06:59 UTC')
     )
   end
 
@@ -35,7 +36,8 @@ describe FlareUp::STLLoadError do
         'colname' => 'TEST_COLNAME     ',
         'filename' => 'TEST_FILENAME    ',
         'position' => '2   ',
-        'line_number' => '3      '
+        'line_number' => '3      ',
+        'starttime' => '2014-08-11 06:06:59      '
       }
     end
 
@@ -55,6 +57,7 @@ describe FlareUp::STLLoadError do
       expect(load_error_from_hash.filename).to eq('TEST_FILENAME')
       expect(load_error_from_hash.position).to eq(2)
       expect(load_error_from_hash.line_number).to eq(3)
+      expect(load_error_from_hash.start_time).to eq(Time.parse('2014-08-11 06:06:59 UTC'))
     end
   end
 

@@ -11,8 +11,9 @@ module FlareUp
     attr_reader :filename
     attr_reader :position
     attr_reader :line_number
+    attr_reader :start_time
 
-    def initialize(err_reason, raw_field_value, raw_line, col_length, type, colname, filename, position, line_number)
+    def initialize(err_reason, raw_field_value, raw_line, col_length, type, colname, filename, position, line_number, start_time)
       @err_reason = err_reason
       @raw_field_value = raw_field_value
       @raw_line = raw_line
@@ -22,6 +23,7 @@ module FlareUp
       @filename = filename
       @position = position
       @line_number = line_number
+      @start_time = start_time
     end
 
     def ==(other_error)
@@ -34,11 +36,13 @@ module FlareUp
       return false unless @filename == other_error.filename
       return false unless @position == other_error.position
       return false unless @line_number == other_error.line_number
+      return false unless @start_time == other_error.start_time
       true
     end
 
     def pretty_print
       output = ''
+      output += "\e[33mSTART : \e[37m#{@start_time} (#{@start_time - 7 * 60 * 60} PST)\n"
       output += "\e[33mREASON: \e[37m#{@err_reason}\n"
       output += "\e[33mLINE  : \e[37m#{@line_number}\n"
       output += "\e[33mPOS   : \e[37m#{@position}\n"
@@ -58,7 +62,8 @@ module FlareUp
         row['colname'].strip,
         row['filename'].strip,
         row['position'].strip.to_i,
-        row['line_number'].strip.to_i
+        row['line_number'].strip.to_i,
+        Time.parse("#{row['starttime'].strip} UTC'")
       )
     end
 

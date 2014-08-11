@@ -17,7 +17,8 @@ describe FlareUp::STLLoadErrorFetcher do
           'colname' => 'TEST_COLNAME',
           'filename' => 'TEST_FILENAME',
           'position' => '2',
-          'line_number' => '3'
+          'line_number' => '3',
+          'starttime' => '2014-08-11 06:06:59'
         }
       ])
     end
@@ -34,7 +35,8 @@ describe FlareUp::STLLoadErrorFetcher do
             'TEST_COLNAME',
             'TEST_FILENAME',
             2,
-            3
+            3,
+            Time.parse('2014-08-11 06:06:59 UTC')
           )
         ]
       )
