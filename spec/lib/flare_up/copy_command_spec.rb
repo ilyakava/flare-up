@@ -96,6 +96,13 @@ describe FlareUp::CopyCommand do
           end
         end
 
+        context 'when the bucket is not in the same zone as the Redshift instance' do
+          let(:message) { 'The bucket you are attempting to access must be addressed using the specified endpoint' }
+          it 'should be an error' do
+            expect { subject.execute(conn) }.to raise_error(FlareUp::OtherZoneBucketError)
+          end
+        end
+
         context 'when there was another kind of internal error' do
           let(:message) { '_' }
           it 'should respond with a list of errors' do

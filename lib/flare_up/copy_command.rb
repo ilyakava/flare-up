@@ -2,6 +2,8 @@ module FlareUp
 
   class DataSourceError < StandardError
   end
+  class OtherZoneBucketError < StandardError
+  end
 
   class CopyCommand
 
@@ -40,6 +42,8 @@ module FlareUp
             return STLLoadErrorFetcher.fetch_errors(connection)
           when /The specified S3 prefix '.+' does not exist/
             raise DataSourceError, "A data source with prefix '#{@data_source}' does not exist."
+          when /The bucket you are attempting to access must be addressed using the specified endpoint/
+            raise OtherZoneBucketError, "Your Redshift instance appears to be in a different zone than your S3 bucket.  Specify the \"REGION 'bucket-region'\" option."
           else
             raise e
         end
