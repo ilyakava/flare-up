@@ -3,6 +3,10 @@ describe FlareUp::Boot do
   describe '.boot' do
     let(:copy_command) { instance_double('FlareUp::CopyCommand') }
 
+    before do
+      allow(copy_command).to receive(:get_command)
+    end
+
     context 'when there is an error' do
       before do
         expect(FlareUp::Boot).to receive(:create_copy_command).and_return(copy_command)

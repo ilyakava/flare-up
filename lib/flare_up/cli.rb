@@ -32,10 +32,11 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
         CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
         CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
       rescue ArgumentError => e
-        CLI.output_error(e.message)
+        Emitter.error(e.message)
         CLI.bailout(1)
       end
 
+      Emitter.store_options(boot_options)
       Boot.boot(boot_options)
     end
 
@@ -48,11 +49,6 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
     # TODO: Extract
     def self.bailout(exit_code)
       exit(1)
-    end
-
-    # TODO: Extract
-    def self.output_error(message)
-      $stderr.puts "\x1b[31m#{message}" unless ENV['TESTING']
     end
 
   end
