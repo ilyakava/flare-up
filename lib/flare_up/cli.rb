@@ -8,7 +8,7 @@ module FlareUp
 DATA_SOURCE into DATABASE_NAME.TABLE_NAME at REDSHIFT_ENDPOINT.
 
 Documentation for this version can be found at:\x5
-https://github.com/rslifka/flare/blob/v#{FlareUp::VERSION}/README.md
+https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
     LONGDESC
     option :aws_access_key, :type => :string, :desc => "Required unless ENV['AWS_ACCESS_KEY_ID'] is set."
     option :aws_secret_key, :type => :string, :desc => "Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set."
