@@ -26,10 +26,15 @@ https://github.com/rslifka/flare/blob/v#{FlareUp::VERSION}/README.md
       }
       options.each { |k, v| boot_options[k.to_sym] = v }
 
-      CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
-      CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
-      CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
-      CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
+      begin
+        CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
+        CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
+        CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
+        CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
+      rescue ArgumentError => e
+        puts "\x1b[31m#{e.message}"
+        exit(1)
+      end
 
       Boot.boot(boot_options)
     end
