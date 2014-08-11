@@ -28,12 +28,14 @@ Usage:
   flare-up copy DATA_SOURCE REDSHIFT_ENDPOINT DATABASE TABLE
 
 Options:
-  [--aws-access-key=AWS_ACCESS_KEY]        # Required unless ENV['AWS_ACCESS_KEY_ID'] is set.
-  [--aws-secret-key=AWS_SECRET_KEY]        # Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set.
-  [--redshift-username=REDSHIFT_USERNAME]  # Required unless ENV['REDSHIFT_USERNAME'] is set.
-  [--redshift-password=REDSHIFT_PASSWORD]  # Required unless ENV['REDSHIFT_PASSWORD'] is set.
-  [--column-list=one two three]            # A space-separated list of columns, should your DATA_SOURCE require it
-  [--copy-options=COPY_OPTIONS]            # Appended to the end of the COPY command; enclose "IN QUOTES"
+  [--aws-access-key=AWS_ACCESS_KEY]            # Required unless ENV['AWS_ACCESS_KEY_ID'] is set.
+  [--aws-secret-key=AWS_SECRET_KEY]            # Required unless ENV['AWS_SECRET_ACCESS_KEY'] is set.
+  [--redshift-username=REDSHIFT_USERNAME]      # Required unless ENV['REDSHIFT_USERNAME'] is set.
+  [--redshift-password=REDSHIFT_PASSWORD]      # Required unless ENV['REDSHIFT_PASSWORD'] is set.
+  [--column-list=one two three]                # A space-separated list of columns, should your DATA_SOURCE require it
+  [--copy-options=COPY_OPTIONS]                # Appended to the end of the COPY command; enclose "IN QUOTES"
+  [--colorize-output], [--no-colorize-output]  # Should Flare-up colorize its output?
+                                               # Default: true
 ```
 
 ## Sample Usage
