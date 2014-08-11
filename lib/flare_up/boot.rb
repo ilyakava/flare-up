@@ -7,14 +7,7 @@ module FlareUp
       conn = create_connection(options)
       copy = create_copy_command(options)
 
-      errors = copy.execute(conn)
-      if errors.empty?
-        return
-      end
-
-      errors.each do |e|
-        puts e.pretty_print
-      end
+      handle_load_errors(copy.execute(conn))
     end
 
     def self.create_connection(options)
@@ -36,6 +29,15 @@ module FlareUp
       copy.columns = options[:column_list] if options[:column_list]
       copy.options = options[:copy_options] if options[:copy_options]
       copy
+    end
+
+    # TODO: How can we test this?
+    def self.handle_load_errors(stl_load_errors)
+      return if stl_load_errors.empty?
+      puts "\x1b[31mThere was an error processing the COPY command:"
+      stl_load_errors.each do |e|
+        puts e.pretty_print
+      end
     end
 
   end
