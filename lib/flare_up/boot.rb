@@ -40,7 +40,7 @@ module FlareUp
     # TODO: How can we test this?
     def self.handle_load_errors(stl_load_errors)
       return if stl_load_errors.empty?
-      puts "\x1b[31mThere was an error processing the COPY command:"
+      puts "\x1b[31mThere was an error processing the COPY command.  Displaying the last (#{stl_load_errors.length}) errors."
       stl_load_errors.each do |e|
         puts e.pretty_print
       end
