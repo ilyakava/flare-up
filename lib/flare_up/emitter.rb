@@ -22,7 +22,7 @@ module FlareUp
     # TODO: How do we test this?
     def self.sanitize(message)
       RISKY_OPTIONS.each do |risky_option|
-        message.gsub!(@BOOT_OPTIONS[risky_option], 'REDACTED')
+        message.gsub!(@BOOT_OPTIONS[risky_option], 'REDACTED') if @BOOT_OPTIONS[risky_option]
       end
       message.gsub!(/\e\[(\d+)(;\d+)*m/, '') unless @BOOT_OPTIONS[:colorize_output]
       message
