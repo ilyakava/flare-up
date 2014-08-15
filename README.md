@@ -50,5 +50,5 @@ Note that this example assumes you have credentials set as environment variables
     dev                                                         \
     hearthstone_cards                                           \
     --column-list name cost attack health description           \
-    --copy_options "REGION 'us-east-1' CSV"
+    --copy-options "REGION 'us-east-1' CSV"
 ```
