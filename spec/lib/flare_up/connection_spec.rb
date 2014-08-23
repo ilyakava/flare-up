@@ -106,6 +106,10 @@ describe FlareUp::Connection do
         :user => 'TEST_USER',
         :password => 'TEST_PASSWORD',
         :connect_timeout => 5,
+        :keepalives => 1,
+        :keepalives_idle => 30,
+        :keepalives_interval => 10,
+        :keepalives_count => 3
       })
     end
 

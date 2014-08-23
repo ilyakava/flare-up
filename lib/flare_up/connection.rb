@@ -55,11 +55,12 @@ module FlareUp
           when /password authentication failed for user/
             raise AuthenticationError, "Either username '#{@user}' or password invalid"
           else
-            raise UnknownError
+            raise UnknownError, e.message
         end
       end
     end
 
+    # http://www.postgresql.org/docs/9.3/static/libpq-connect.html#LIBPQ-PARAMKEYWORDS
     def connection_parameters
       {
         :host => @host,
@@ -67,7 +68,17 @@ module FlareUp
         :dbname => @dbname,
         :user => @user,
         :password => @password,
-        :connect_timeout => @connect_timeout
+        :connect_timeout => @connect_timeout,
+        # Enable keep-alives
+        :keepalives => 1,
+        # Idle time in between keep-alives when there is a response from the peer
+        :keepalives_idle => 30,
+        # Interval between keep-alives when there is no response from the peer
+        # This is done to probe the peer until there is a response
+        :keepalives_interval => 10,
+        # Number of keep-alives that can be lost before the client's connection
+        # to the server is considered dead
+        :keepalives_count => 3
       }
     end
 
