@@ -10,6 +10,9 @@ module FlareUp
       begin
         Emitter.info("Executing command: #{copy.get_command}")
         handle_load_errors(copy.execute(conn))
+      rescue ConnectionError => e
+        Emitter.error(e.message)
+        CLI.bailout(1)
       rescue CopyCommandError => e
         Emitter.error(e.message)
         CLI.bailout(1)

@@ -1,13 +1,15 @@
 describe FlareUp::Boot do
 
   describe '.boot' do
+    let(:connection) { instance_double('FlareUp::Connection') }
     let(:copy_command) { instance_double('FlareUp::CopyCommand') }
 
     before do
       allow(copy_command).to receive(:get_command)
     end
 
-    context 'when there is an error' do
+    context 'when there is an error connecting' do
+
       before do
         expect(FlareUp::Boot).to receive(:create_copy_command).and_return(copy_command)
         expect(copy_command).to receive(:execute).and_raise(copy_command_error)
@@ -31,6 +33,55 @@ describe FlareUp::Boot do
 
       context 'when there is a OtherZoneBucketError' do
         let(:copy_command_error) { FlareUp::SyntaxError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+    end
+
+    context 'when there is an error copying' do
+
+      before do
+        expect(FlareUp::Boot).to receive(:create_connection).and_return(connection)
+        expect(connection).to receive(:execute).and_raise(connection_error)
+      end
+
+      context 'when there is a HostUnknownOrInaccessibleError' do
+        let(:connection_error) { FlareUp::HostUnknownOrInaccessibleError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+      context 'when there is a TimeoutError' do
+        let(:connection_error) { FlareUp::TimeoutError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+      context 'when there is a NoDatabaseError' do
+        let(:connection_error) { FlareUp::NoDatabaseError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+      context 'when there is a AuthenticationError' do
+        let(:connection_error) { FlareUp::AuthenticationError }
+        it 'should handle the error' do
+          expect(FlareUp::CLI).to receive(:bailout).with(1)
+          expect { FlareUp::Boot.boot({}) }.not_to raise_error
+        end
+      end
+
+      context 'when there is a UnknownError' do
+        let(:connection_error) { FlareUp::UnknownError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
           expect { FlareUp::Boot.boot({}) }.not_to raise_error

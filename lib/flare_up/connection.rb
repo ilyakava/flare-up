@@ -1,14 +1,16 @@
 module FlareUp
 
-  class HostUnknownOrInaccessibleError < StandardError
+  class ConnectionError < StandardError
   end
-  class TimeoutError < StandardError
+  class HostUnknownOrInaccessibleError < ConnectionError
   end
-  class NoDatabaseError < StandardError
+  class TimeoutError < ConnectionError
   end
-  class AuthenticationError < StandardError
+  class NoDatabaseError < ConnectionError
   end
-  class UnknownError < StandardError
+  class AuthenticationError < ConnectionError
+  end
+  class UnknownError < ConnectionError
   end
 
   class Connection
