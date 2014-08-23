@@ -32,11 +32,10 @@ module FlareUp
       @connect_timeout = 5
     end
 
-    # TODO - Not quite sure how to test this; perhaps fold connect/execute into
-    # TODO   one method so we can close connections in case of failure, etc.
+    # TODO - Redesign to facilitate testing
     def execute(statement)
       @pg_conn ||= connect
-      @pg_conn.exec(statement)
+      @pg_conn.async_exec(statement)
     end
 
     private
