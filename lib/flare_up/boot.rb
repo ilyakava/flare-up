@@ -2,12 +2,23 @@ module FlareUp
 
   class Boot
 
-    # TODO: This control flow is untested
+    # TODO: This control flow is untested and too procedural
     def self.boot(options)
       conn = create_connection(options)
       copy = create_copy_command(options)
 
       begin
+        trap('SIGINT') do
+          Emitter.warn('CTRL-C received; cancelling COPY command...')
+          error_message = conn.cancel_current_command
+          if error_message
+            Emitter.error("Error cancelling COPY: #{error_message}")
+          else
+            Emitter.success('COPY command cancelled.')
+          end
+          CLI.bailout(1)
+        end
+
         Emitter.info("Executing command: #{copy.get_command}")
         handle_load_errors(copy.execute(conn))
       rescue ConnectionError => e

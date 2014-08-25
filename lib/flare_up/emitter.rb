@@ -15,6 +15,16 @@ module FlareUp
     end
 
     # TODO: How do we test this?
+    def self.success(message)
+      $stdout.puts sanitize("\x1b[32m#{message}") unless ENV['TESTING']
+    end
+
+    # TODO: How do we test this?
+    def self.warn(message)
+      $stdout.puts sanitize("\x1b[33m#{message}") unless ENV['TESTING']
+    end
+
+    # TODO: How do we test this?
     def self.info(message)
       $stdout.puts sanitize(message) unless ENV['TESTING']
     end
