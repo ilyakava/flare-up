@@ -32,13 +32,19 @@ module FlareUp
       @connect_timeout = 5
     end
 
-    # TODO - Redesign to facilitate testing
     def execute(statement)
-      @pg_conn ||= connect
-      @pg_conn.async_exec(statement)
+      connection.async_exec(statement)
+    end
+
+    def cancel_current_command
+      connection.cancel
     end
 
     private
+
+    def connection
+      @pg_conn ||= connect
+    end
 
     def connect
       begin

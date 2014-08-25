@@ -4,6 +4,8 @@ describe FlareUp::Connection do
     FlareUp::Connection.new('TEST_HOST', 'TEST_DB_NAME', 'TEST_USER', 'TEST_PASSWORD')
   end
 
+  let(:mock_pg_connection) { instance_double('PGConn') }
+
   its(:host) { should == 'TEST_HOST' }
   its(:port) { should == 5439 }
   its(:dbname) { should == 'TEST_DB_NAME' }
@@ -97,7 +99,6 @@ describe FlareUp::Connection do
   end
 
   describe '#connection_parameters' do
-
     it 'should return the required parameters' do
       expect(subject.send(:connection_parameters)).to eq({
         :host => 'TEST_HOST',
@@ -112,7 +113,26 @@ describe FlareUp::Connection do
         :keepalives_count => 3
       })
     end
+  end
 
+  describe '#execute' do
+    before do
+      allow(subject).to receive(:connect).and_return(mock_pg_connection)
+    end
+    it 'should execute the specified command' do
+      expect(mock_pg_connection).to receive(:async_exec).with('TEST_STATEMENT')
+      subject.execute('TEST_STATEMENT')
+    end
+  end
+
+  describe '#cancel_current_command' do
+    before do
+      allow(subject).to receive(:connect).and_return(mock_pg_connection)
+    end
+    it 'should execute the specified command' do
+      expect(mock_pg_connection).to receive(:cancel)
+      subject.cancel_current_command
+    end
   end
 
 end
