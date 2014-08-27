@@ -9,7 +9,7 @@ module FlareUp
 
       begin
         trap('SIGINT') do
-          Emitter.warn('CTRL-C received; cancelling COPY command...')
+          Emitter.warn("\nCTRL-C received; cancelling COPY command...")
           error_message = conn.cancel_current_command
           if error_message
             Emitter.error("Error cancelling COPY: #{error_message}")
