@@ -37,7 +37,9 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
         CLI.bailout(1)
       end
 
-      Boot.boot(boot_options)
+      OptionStore.store_options(boot_options)
+
+      Boot.boot
     end
 
     def self.env_validator(options, option_name, env_variable_name)
@@ -46,9 +48,8 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
       raise ArgumentError, "One of either the --#{option_name} option or the ENV['#{env_variable_name}'] must be set"
     end
 
-    # TODO: Extract
     def self.bailout(exit_code)
-      exit(1)
+      exit(exit_code)
     end
 
   end

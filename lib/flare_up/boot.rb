@@ -3,9 +3,9 @@ module FlareUp
   class Boot
 
     # TODO: This control flow is untested and too procedural
-    def self.boot(options)
-      conn = create_connection(options)
-      copy = create_copy_command(options)
+    def self.boot
+      conn = create_connection
+      copy = create_copy_command
 
       begin
         trap('SIGINT') do
@@ -31,28 +31,30 @@ module FlareUp
 
     end
 
-    def self.create_connection(options)
+    def self.create_connection
       FlareUp::Connection.new(
-        options[:redshift_endpoint],
-        options[:database],
-        options[:redshift_username],
-        options[:redshift_password]
+        OptionStore.get(:redshift_endpoint),
+        OptionStore.get(:database),
+        OptionStore.get(:redshift_username),
+        OptionStore.get(:redshift_password)
       )
     end
+    private_class_method :create_connection
 
-    def self.create_copy_command(options)
+    def self.create_copy_command
       copy = FlareUp::CopyCommand.new(
-        options[:table],
-        options[:data_source],
-        options[:aws_access_key],
-        options[:aws_secret_key]
+        OptionStore.get(:table),
+        OptionStore.get(:data_source),
+        OptionStore.get(:aws_access_key),
+        OptionStore.get(:aws_secret_key)
       )
-      copy.columns = options[:column_list] if options[:column_list]
-      copy.options = options[:copy_options] if options[:copy_options]
+      copy.columns = OptionStore.get(:column_list) if OptionStore.get(:column_list)
+      copy.options = OptionStore.get(:copy_options) if OptionStore.get(:copy_options)
       copy
     end
+    private_class_method :create_copy_command
 
-    # TODO: How can we test this?
+    # TODO: Backfill tests
     def self.handle_load_errors(stl_load_errors)
       return if stl_load_errors.empty?
       Emitter.error("There was an error processing the COPY command.  Displaying the last (#{stl_load_errors.length}) errors.")
@@ -61,6 +63,7 @@ module FlareUp
       end
       CLI.bailout(1)
     end
+    private_class_method :handle_load_errors
 
   end
 

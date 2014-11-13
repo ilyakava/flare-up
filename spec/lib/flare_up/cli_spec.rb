@@ -25,29 +25,29 @@ describe FlareUp::CLI do
 
   describe '#copy' do
 
-    xit 'should pass the options on the emitter' do
-      expect(FlareUp::Emitter).to receive(:store_options).with(required_options)
+    it 'should boot' do
+      expect(FlareUp::Boot).to receive(:boot)
       FlareUp::CLI.start(required_arguments)
     end
 
     context 'when no options are specified' do
       it 'should boot with the proper options' do
-        expect(FlareUp::Boot).to receive(:boot).with(required_options)
         FlareUp::CLI.start(required_arguments)
+        expect(FlareUp::OptionStore.get_options).to eq(required_options)
       end
     end
 
     context 'when column ordering is specified' do
       it 'should boot with the proper options' do
-        expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:column_list => %w(c1 c2 c3)))
         FlareUp::CLI.start(required_arguments + %w(--column_list c1 c2 c3))
+        expect(FlareUp::OptionStore.get(:column_list)).to eq(%w(c1 c2 c3))
       end
     end
 
     context 'when COPY options are specified' do
       it 'should boot with the proper options' do
-        expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:copy_options => 'TEST_COPY_OPTIONS WITH A SPACE'))
         FlareUp::CLI.start(required_arguments + ['--copy_options', 'TEST_COPY_OPTIONS WITH A SPACE'])
+        expect(FlareUp::OptionStore.get(:copy_options)).to eq('TEST_COPY_OPTIONS WITH A SPACE')
       end
     end
 
@@ -55,15 +55,15 @@ describe FlareUp::CLI do
 
       context 'when it is not specified' do
         it 'should boot with the proper options' do
-          expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:colorize_output => true))
           FlareUp::CLI.start(required_arguments)
+          expect(FlareUp::OptionStore.get(:colorize_output)).to eq(true)
         end
       end
 
       context 'when it is specified' do
         it 'should boot with the proper options' do
-          expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:colorize_output => false))
           FlareUp::CLI.start(required_arguments + ['--colorize_output=false'])
+          expect(FlareUp::OptionStore.get(:colorize_output)).to eq(false)
         end
       end
 
@@ -74,23 +74,21 @@ describe FlareUp::CLI do
       describe 'username' do
         context 'when it is specified on the CLI' do
           it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_username => 'CLI_VALUE'))
             FlareUp::CLI.start(required_arguments + %w(--redshift_username CLI_VALUE))
+            expect(FlareUp::OptionStore.get(:redshift_username)).to eq('CLI_VALUE')
           end
         end
         context 'when it is not specified on the CLI' do
           context 'when it is available via ENV' do
             it 'should boot with the key from the environment' do
-              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_username => 'TEST_REDSHIFT_USERNAME'))
               FlareUp::CLI.start(required_arguments)
+              expect(FlareUp::OptionStore.get(:redshift_username)).to eq('TEST_REDSHIFT_USERNAME')
             end
           end
           context 'when it is not available via ENV' do
-            before do
+            it 'should be an error' do
               allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_USERNAME').and_return(nil)
               expect(FlareUp::CLI).to receive(:bailout).with(1)
-            end
-            it 'should be an error' do
               FlareUp::CLI.start(required_arguments)
             end
           end
@@ -100,23 +98,23 @@ describe FlareUp::CLI do
       describe 'password' do
         context 'when it is specified on the CLI' do
           it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_password => 'CLI_VALUE'))
             FlareUp::CLI.start(required_arguments + %w(--redshift_password CLI_VALUE))
+            expect(FlareUp::OptionStore.get(:redshift_password)).to eq('CLI_VALUE')
           end
         end
         context 'when it is not specified on the CLI' do
           context 'when it is available via ENV' do
             it 'should boot with the key from the environment' do
-              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:redshift_password => 'TEST_REDSHIFT_PASSWORD'))
               FlareUp::CLI.start(required_arguments)
+              expect(FlareUp::OptionStore.get(:redshift_password)).to eq('TEST_REDSHIFT_PASSWORD')
             end
           end
           context 'when it is not available via ENV' do
             before do
-              allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return(nil)
-              expect(FlareUp::CLI).to receive(:bailout).with(1)
             end
             it 'should be an error' do
+              allow(FlareUp::ENVWrap).to receive(:get).with('REDSHIFT_PASSWORD').and_return(nil)
+              expect(FlareUp::CLI).to receive(:bailout).with(1)
               FlareUp::CLI.start(required_arguments)
             end
           end
@@ -130,15 +128,15 @@ describe FlareUp::CLI do
       describe 'access key' do
         context 'when an AWS access key is specified' do
           it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_access_key => 'CLI_KEY'))
             FlareUp::CLI.start(required_arguments + %w(--aws_access_key CLI_KEY))
+            expect(FlareUp::OptionStore.get(:aws_access_key)).to eq('CLI_KEY')
           end
         end
         context 'when an AWS access key is not specified' do
           context 'when the key is available via ENV' do
             it 'should boot with the key from the environment' do
-              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_access_key => 'TEST_AWS_ACCESS_KEY'))
               FlareUp::CLI.start(required_arguments)
+              expect(FlareUp::OptionStore.get(:aws_access_key)).to eq('TEST_AWS_ACCESS_KEY')
             end
           end
           context 'when the key is not available via ENV' do
@@ -156,15 +154,15 @@ describe FlareUp::CLI do
       describe 'secret key' do
         context 'when an AWS secret key is specified' do
           it 'should boot with the proper options' do
-            expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_secret_key => 'CLI_KEY'))
             FlareUp::CLI.start(required_arguments + %w(--aws_secret_key CLI_KEY))
+            expect(FlareUp::OptionStore.get(:aws_secret_key)).to eq('CLI_KEY')
           end
         end
         context 'when an AWS secret key is not specified' do
           context 'when the key is available via ENV' do
             it 'should boot with the key from the environment' do
-              expect(FlareUp::Boot).to receive(:boot).with(required_options.merge(:aws_secret_key => 'TEST_AWS_SECRET_KEY'))
               FlareUp::CLI.start(required_arguments)
+              expect(FlareUp::OptionStore.get(:aws_secret_key)).to eq('TEST_AWS_SECRET_KEY')
             end
           end
           context 'when the key is not available via ENV' do
