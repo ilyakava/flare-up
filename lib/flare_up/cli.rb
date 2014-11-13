@@ -37,7 +37,6 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
         CLI.bailout(1)
       end
 
-      Emitter.store_options(boot_options)
       Boot.boot(boot_options)
     end
 

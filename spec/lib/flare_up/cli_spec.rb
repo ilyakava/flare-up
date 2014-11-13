@@ -25,7 +25,7 @@ describe FlareUp::CLI do
 
   describe '#copy' do
 
-    it 'should pass the options on the emitter' do
+    xit 'should pass the options on the emitter' do
       expect(FlareUp::Emitter).to receive(:store_options).with(required_options)
       FlareUp::CLI.start(required_arguments)
     end

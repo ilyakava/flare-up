@@ -25,10 +25,6 @@ module FlareUp
       out(message)
     end
 
-    def self.store_options(options)
-      @BOOT_OPTIONS = options
-    end
-
     def self.out(message)
       $stderr.puts(sanitize(message)) unless ENV['TESTING']
     end
@@ -41,9 +37,9 @@ module FlareUp
 
     def self.sanitize(message)
       RISKY_OPTIONS.each do |risky_option|
-        message.gsub!(@BOOT_OPTIONS[risky_option], 'REDACTED') if @BOOT_OPTIONS[risky_option]
+        message.gsub!(OptionStore.get(risky_option), 'REDACTED') if OptionStore.get(risky_option)
       end
-      message.gsub!(/\e\[(\d+)(;\d+)*m/, '') unless @BOOT_OPTIONS[:colorize_output]
+      message.gsub!(/\e\[(\d+)(;\d+)*m/, '') unless OptionStore.get(:colorize_output)
       message
     end
     private_class_method :sanitize

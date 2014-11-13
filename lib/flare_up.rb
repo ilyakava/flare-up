@@ -3,6 +3,7 @@ require 'thor'
 
 require 'flare_up/version'
 
+require 'flare_up/option_store'
 require 'flare_up/env_wrap'
 require 'flare_up/emitter'
 

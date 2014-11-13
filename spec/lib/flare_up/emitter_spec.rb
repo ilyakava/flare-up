@@ -32,7 +32,7 @@ describe FlareUp::Emitter do
 
     context 'when colorize output is disabled' do
       before do
-        FlareUp::Emitter.store_options({ :colorize_output => false })
+        FlareUp::OptionStore.store_option(:colorize_output, false)
       end
       it 'should remove color codes' do
         expect(FlareUp::Emitter.send(:sanitize, "\x1b[31mHello, World")).to eq('Hello, World')
@@ -41,7 +41,7 @@ describe FlareUp::Emitter do
 
     context 'when a risky option is being output' do
       before do
-        FlareUp::Emitter.store_options({
+        FlareUp::OptionStore.store_options({
             :aws_access_key => 'access',
             :aws_secret_key => 'secret',
             :redshift_username => 'user',
