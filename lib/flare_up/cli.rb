@@ -26,6 +26,7 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
         :table => table_name
       }
       options.each { |k, v| boot_options[k.to_sym] = v }
+      Emitter.store_options(boot_options)
 
       begin
         CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
@@ -37,7 +38,6 @@ https://github.com/sharethrough/flare-up/blob/v#{FlareUp::VERSION}/README.md
         CLI.bailout(1)
       end
 
-      Emitter.store_options(boot_options)
       Boot.boot(boot_options)
     end
 
