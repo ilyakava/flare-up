@@ -1,5 +1,33 @@
 describe FlareUp::Emitter do
 
+  describe '.error' do
+    it 'should emit' do
+      expect(FlareUp::Emitter).to receive(:err).with("\x1b[31mTEST_MESSAGE")
+      FlareUp::Emitter.error('TEST_MESSAGE')
+    end
+  end
+
+  describe '.success' do
+    it 'should emit' do
+      expect(FlareUp::Emitter).to receive(:out).with("\x1b[32mTEST_MESSAGE")
+      FlareUp::Emitter.success('TEST_MESSAGE')
+    end
+  end
+
+  describe '.warn' do
+    it 'should emit' do
+      expect(FlareUp::Emitter).to receive(:err).with("\x1b[33mTEST_MESSAGE")
+      FlareUp::Emitter.warn('TEST_MESSAGE')
+    end
+  end
+
+  describe '.info' do
+    it 'should emit' do
+      expect(FlareUp::Emitter).to receive(:out).with('TEST_MESSAGE')
+      FlareUp::Emitter.info('TEST_MESSAGE')
+    end
+  end
+
   describe '.sanitize' do
 
     context 'when colorize output is disabled' do
@@ -7,7 +35,7 @@ describe FlareUp::Emitter do
         FlareUp::Emitter.store_options({:colorize_output => false})
       end
       it 'should remove color codes' do
-        expect(FlareUp::Emitter.sanitize("\x1b[31mHello, World")).to eq('Hello, World')
+        expect(FlareUp::Emitter.send(:sanitize, "\x1b[31mHello, World")).to eq('Hello, World')
       end
     end
 
@@ -16,7 +44,7 @@ describe FlareUp::Emitter do
         FlareUp::Emitter.store_options({:aws_access_key => 'foo'})
       end
       it 'should hide it' do
-        expect(FlareUp::Emitter.sanitize('Hellofoo')).to eq('HelloREDACTED')
+        expect(FlareUp::Emitter.send(:sanitize, 'Hellofoo')).to eq('HelloREDACTED')
       end
     end
 

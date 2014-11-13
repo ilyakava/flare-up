@@ -9,27 +9,36 @@ module FlareUp
       :redshift_password
     ]
 
-    # TODO: How do we test this?
     def self.error(message)
-      $stderr.puts sanitize("\x1b[31m#{message}") unless ENV['TESTING']
+      err("\x1b[31m#{message}")
     end
 
-    # TODO: How do we test this?
     def self.success(message)
-      $stdout.puts sanitize("\x1b[32m#{message}") unless ENV['TESTING']
+      out("\x1b[32m#{message}")
     end
 
-    # TODO: How do we test this?
     def self.warn(message)
-      $stdout.puts sanitize("\x1b[33m#{message}") unless ENV['TESTING']
+      err("\x1b[33m#{message}")
     end
 
-    # TODO: How do we test this?
     def self.info(message)
-      $stdout.puts sanitize(message) unless ENV['TESTING']
+      out(message)
     end
 
-    # TODO: How do we test this?
+    def self.store_options(options)
+      @BOOT_OPTIONS = options
+    end
+
+    def self.out(message)
+      $stderr.puts(sanitize(message)) unless ENV['TESTING']
+    end
+    private_class_method :out
+
+    def self.err(message)
+      $stdout.puts(sanitize(message)) unless ENV['TESTING']
+    end
+    private_class_method :err
+
     def self.sanitize(message)
       RISKY_OPTIONS.each do |risky_option|
         message.gsub!(@BOOT_OPTIONS[risky_option], 'REDACTED') if @BOOT_OPTIONS[risky_option]
@@ -37,11 +46,7 @@ module FlareUp
       message.gsub!(/\e\[(\d+)(;\d+)*m/, '') unless @BOOT_OPTIONS[:colorize_output]
       message
     end
-
-    # TODO: How do we test this?
-    def self.store_options(options)
-      @BOOT_OPTIONS = options
-    end
+    private_class_method :sanitize
 
   end
 
