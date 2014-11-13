@@ -1,5 +1,6 @@
 require 'pg'
 require 'thor'
+require 'time'
 
 require 'flare_up/version'
 
