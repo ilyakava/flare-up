@@ -15,6 +15,14 @@ describe FlareUp::OptionStore do
     end
   end
 
+  describe '.get_options' do
+    let(:options) {{:o1 => 'v1', :o2 => 'v2'}}
+    it 'should return all options' do
+      FlareUp::OptionStore.store_options(options)
+      expect(FlareUp::OptionStore.get_options).to eq(options)
+    end
+  end
+
   describe '.clear' do
     it 'should remove all options' do
       FlareUp::OptionStore.store_option('name', 'value')

@@ -14,6 +14,10 @@ module FlareUp
       storage[name]
     end
 
+    def self.get_options
+      storage
+    end
+
     def self.clear
       storage.clear
     end
