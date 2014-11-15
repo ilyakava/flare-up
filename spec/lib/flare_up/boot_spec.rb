@@ -2,7 +2,8 @@ describe FlareUp::Boot do
 
   describe '.boot' do
     let(:connection) { instance_double('FlareUp::Connection') }
-    let(:copy_command) { instance_double('FlareUp::CopyCommand') }
+    let(:copy_command) { instance_double('FlareUp::Command::Copy') }
+    let(:klass) { FlareUp::Command::Copy }
 
     before do
       allow(copy_command).to receive(:get_command)
@@ -11,7 +12,7 @@ describe FlareUp::Boot do
     context 'when there is an error connecting' do
 
       before do
-        expect(FlareUp::Boot).to receive(:create_copy_command).and_return(copy_command)
+        expect(FlareUp::Boot).to receive(:create_command).and_return(copy_command)
         expect(copy_command).to receive(:execute).and_raise(copy_command_error)
       end
 
@@ -19,7 +20,7 @@ describe FlareUp::Boot do
         let(:copy_command_error) { FlareUp::DataSourceError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -27,7 +28,7 @@ describe FlareUp::Boot do
         let(:copy_command_error) { FlareUp::OtherZoneBucketError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -35,7 +36,7 @@ describe FlareUp::Boot do
         let(:copy_command_error) { FlareUp::SyntaxError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -52,7 +53,7 @@ describe FlareUp::Boot do
         let(:connection_error) { FlareUp::HostUnknownOrInaccessibleError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -60,7 +61,7 @@ describe FlareUp::Boot do
         let(:connection_error) { FlareUp::TimeoutError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -68,7 +69,7 @@ describe FlareUp::Boot do
         let(:connection_error) { FlareUp::NoDatabaseError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -76,7 +77,7 @@ describe FlareUp::Boot do
         let(:connection_error) { FlareUp::AuthenticationError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -84,7 +85,7 @@ describe FlareUp::Boot do
         let(:connection_error) { FlareUp::UnknownError }
         it 'should handle the error' do
           expect(FlareUp::CLI).to receive(:bailout).with(1)
-          expect { FlareUp::Boot.boot }.not_to raise_error
+          expect { FlareUp::Boot.boot klass }.not_to raise_error
         end
       end
 
@@ -113,7 +114,7 @@ describe FlareUp::Boot do
     end
   end
 
-  describe '.create_copy_command' do
+  describe '.create_command' do
 
     before do
       FlareUp::OptionStore.store_options(
@@ -127,7 +128,7 @@ describe FlareUp::Boot do
     end
 
     it 'should create a proper copy command' do
-      command = FlareUp::Boot.send(:create_copy_command)
+      command = FlareUp::Boot.send(:create_command, FlareUp::Command::Copy)
       expect(command.table_name).to eq('TEST_TABLE')
       expect(command.data_source).to eq('TEST_DATA_SOURCE')
       expect(command.aws_access_key_id).to eq('TEST_ACCESS_KEY')
@@ -139,7 +140,7 @@ describe FlareUp::Boot do
         FlareUp::OptionStore.store_option(:column_list, ['c1'])
       end
       it 'should create a proper copy command' do
-        command = FlareUp::Boot.send(:create_copy_command)
+        command = FlareUp::Boot.send(:create_command, FlareUp::Command::Copy)
         expect(command.columns).to eq(['c1'])
       end
     end
@@ -149,7 +150,7 @@ describe FlareUp::Boot do
         FlareUp::OptionStore.store_option(:copy_options, '_')
       end
       it 'should create a proper copy command' do
-        command = FlareUp::Boot.send(:create_copy_command)
+        command = FlareUp::Boot.send(:create_command, FlareUp::Command::Copy)
         expect(command.options).to eq('_')
       end
     end
