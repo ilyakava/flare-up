@@ -1,7 +1,7 @@
-describe FlareUp::CopyCommand do
+describe FlareUp::Command::Copy do
 
   subject do
-    FlareUp::CopyCommand.new('TEST_TABLE_NAME', 'TEST_DATA_SOURCE', 'TEST_ACCESS_KEY', 'TEST_SECRET_KEY')
+    FlareUp::Command::Copy.new('TEST_TABLE_NAME', 'TEST_DATA_SOURCE', 'TEST_ACCESS_KEY', 'TEST_SECRET_KEY')
   end
 
   its(:table_name) { should == 'TEST_TABLE_NAME' }
@@ -116,7 +116,6 @@ describe FlareUp::CopyCommand do
             expect { subject.execute(conn) }.to raise_error(FlareUp::SyntaxError, 'Syntax error in the COPY command: [at or near "lmlkmlk3"].')
           end
         end
-
       end
 
       context 'when there was another type of error' do
@@ -126,9 +125,6 @@ describe FlareUp::CopyCommand do
           expect { subject.execute(conn) }.to raise_error(PG::ConnectionBad, '_')
         end
       end
-
     end
-
   end
-
 end

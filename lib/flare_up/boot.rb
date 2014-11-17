@@ -3,9 +3,9 @@ module FlareUp
   class Boot
 
     # TODO: This control flow is untested and too procedural
-    def self.boot
+    def self.boot(command)
       conn = create_connection
-      copy = create_copy_command
+      cmd = create_command(command)
 
       begin
         trap('SIGINT') do
@@ -19,12 +19,12 @@ module FlareUp
           CLI.bailout(1)
         end
 
-        Emitter.info("Executing command: #{copy.get_command}")
-        handle_load_errors(copy.execute(conn))
+        Emitter.info("Executing command: #{cmd.get_command}")
+        handle_load_errors(cmd.execute(conn))
       rescue ConnectionError => e
         Emitter.error(e.message)
         CLI.bailout(1)
-      rescue CopyCommandError => e
+      rescue CommandError => e
         Emitter.error(e.message)
         CLI.bailout(1)
       end
@@ -41,18 +41,18 @@ module FlareUp
     end
     private_class_method :create_connection
 
-    def self.create_copy_command
-      copy = FlareUp::CopyCommand.new(
+    def self.create_command(klass)
+      cmd = klass.new(
         OptionStore.get(:table),
         OptionStore.get(:data_source),
         OptionStore.get(:aws_access_key),
         OptionStore.get(:aws_secret_key)
       )
-      copy.columns = OptionStore.get(:column_list) if OptionStore.get(:column_list)
-      copy.options = OptionStore.get(:copy_options) if OptionStore.get(:copy_options)
-      copy
+      cmd.columns = OptionStore.get(:column_list) if OptionStore.get(:column_list)
+      cmd.options = OptionStore.get(:copy_options) if OptionStore.get(:copy_options)
+      cmd
     end
-    private_class_method :create_copy_command
+    private_class_method :create_command
 
     # TODO: Backfill tests
     def self.handle_load_errors(stl_load_errors)
