@@ -9,7 +9,6 @@ module FlareUp
         super
       end
 
-
       # http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html
       def get_command
         "CREATE TABLE #{@table_name} #{get_columns} #{@options}"
@@ -27,23 +26,6 @@ module FlareUp
         columns_separated = columns.split(' ')
         raise ArgumentError, 'Columns must have a data type for each name' unless columns_separated.length % 2 == 0
         @columns = columns_separated
-      end
-
-      def execute(connection)
-        begin
-          connection.execute(get_command)
-          []
-        rescue PG::InternalError => e
-          case e.message
-            when /Check 'stl_load_errors' system table for details/
-              return STLLoadErrorFetcher.fetch_errors(connection)
-            when /PG::SyntaxError/
-              matches = /syntax error (.+) \(PG::SyntaxError\)/.match(e.message)
-              raise SyntaxError, "Syntax error in the CREATE TABLE command: [#{matches[1]}]."
-            else
-              raise e
-          end
-        end
       end
 
       private

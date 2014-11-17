@@ -67,6 +67,19 @@ Options:
                                                # Default: true
 ```
 
+### TRUNCATE
+
+```
+Usage:
+  flare-up truncate REDSHIFT_ENDPOINT DATABASE TABLE
+
+Options:
+  [--redshift-username=REDSHIFT_USERNAME]      # Required unless ENV['REDSHIFT_USERNAME'] is set.
+  [--redshift-password=REDSHIFT_PASSWORD]      # Required unless ENV['REDSHIFT_PASSWORD'] is set.
+  [--colorize-output], [--no-colorize-output]  # Should Flare-up colorize its output?
+                                               # Default: true
+```
+
 ## Sample Usage
 
 Note that these examples assume you have credentials set as environment variables.
@@ -102,6 +115,16 @@ Note that these examples assume you have credentials set as environment variable
 ```
 > flare-up                                                      \
     drop_table                                                  \
+    flare-up-test.cskjnp4xvaje.us-west-2.redshift.amazonaws.com \
+    dev                                                         \
+    hearthstone_cards
+```
+
+### TRUNCATE
+
+```
+> flare-up                                                      \
+    truncate                                                    \
     flare-up-test.cskjnp4xvaje.us-west-2.redshift.amazonaws.com \
     dev                                                         \
     hearthstone_cards
