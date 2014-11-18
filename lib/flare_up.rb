@@ -15,6 +15,7 @@ require 'flare_up/command/base'
 require 'flare_up/command/copy'
 require 'flare_up/command/create_table'
 require 'flare_up/command/drop_table'
+require 'flare_up/command/truncate'
 
 require 'flare_up/boot'
 require 'flare_up/cli'

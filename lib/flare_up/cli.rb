@@ -89,6 +89,17 @@ in DATABASE_NAME at REDSHIFT_ENDPOINT.
     all_shared_options.each { |shared_options| method_option *shared_options }
     alias_method :drop_table, :no_datasource_command
 
+    ### truncate command
+
+    desc 'truncate REDSHIFT_ENDPOINT DATABASE TABLE', 'TRUNCATE DATABASE.TABLE in REDSHIFT_ENDPOINT'
+    long_desc <<-LONGDESC
+`flare-up truncate` executes the Redshift TRUNCATE command, deleting all rows the table named TABLE\x5
+in DATABASE_NAME at REDSHIFT_ENDPOINT.
+#{long_desc_footer}
+    LONGDESC
+    all_shared_options.each { |shared_options| method_option *shared_options }
+    alias_method :truncate, :no_datasource_command
+
     # transforms the symbol method names to the corresponding class under
     # the FlareUp::Command namespace
     def self.command_formatter(sym)
