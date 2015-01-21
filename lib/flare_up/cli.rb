@@ -15,8 +15,10 @@ module FlareUp
         options.each { |k, v| boot_options[k.to_sym] = v }
 
         begin
-          CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
-          CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
+          if data_source
+            CLI.env_validator(boot_options, :aws_access_key, 'AWS_ACCESS_KEY_ID')
+            CLI.env_validator(boot_options, :aws_secret_key, 'AWS_SECRET_ACCESS_KEY')
+          end
           CLI.env_validator(boot_options, :redshift_username, 'REDSHIFT_USERNAME')
           CLI.env_validator(boot_options, :redshift_password, 'REDSHIFT_PASSWORD')
         rescue ArgumentError => e
